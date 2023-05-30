@@ -10,4 +10,4 @@ They key data can be found below:
 ## Research Areas
 
 
-## Research Projects
+## Research Project
