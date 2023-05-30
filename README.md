@@ -7,6 +7,14 @@ Our publication "Group III-V semiconductors as promising nonlinear integrated ph
 https://www.tandfonline.com/doi/pdf/10.1080/23746149.2022.2097020
 
 They key data can be found below:
+
+![Demo Animation1](../assets2/III-V_Nitrides_nonlinear_properties.png?raw=true)
+
+![Demo Animation2](../assets2/AlGaAs_nonlinear_properties.png)
+
+![Demo Animation3](../assets2/InGaAsP_Nonlinear_Properties.png)
+
+
 ## Research Areas
 
 
