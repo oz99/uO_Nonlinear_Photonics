@@ -4,9 +4,12 @@ from meep import mpb
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize_scalar
 
-# Photonic crystal slab consisting of a triangular lattice of air
+# Author: Ozan Oner
+# Photonic crystal slab consisting of a Kagome lattice of air
 # holes in a finite_thickness dielectric slab, optionally with a
-# substrate on one side of the slab.  See the paper: S. G. Johnson,
+# substrate on one side of the slab. 
+
+# For similar case using triangular lattice see the paper: S. G. Johnson,
 # S. Fan, P. R. Villeneuve, J. D. Joannopoulos, L. A. Kolodziejski,
 # "Guided modes in photonic crystal slabs," PRB 60, 5751 (August
 # 1999).
@@ -21,7 +24,7 @@ eps = 12.0  # the dielectric constant of the slab
 loweps = 1.0  # the dielectric constant of the substrate
 r = 0.252  # the radius of the holes
 supercell_h = 4  # height of the supercell
-lattice_constant = 1
+lattice_constant = 1 #Normalized lattice constant // Note the lattice constant is defined as a in litterature
 
 # Define the basis vectors for the hexagonal lattice structure
 basis1=mp.Vector3(math.sqrt(3)/2 * lattice_constant, 0.5 * lattice_constant)
