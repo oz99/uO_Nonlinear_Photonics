@@ -20,12 +20,11 @@ from scipy.optimize import minimize_scalar
 # the run_zeven and run_zodd functions.
 
 h = 0.5  # the thickness of the slab .. Note that this should be changed to represent a 220nm thick Si slab
-eps = 12.0  # the dielectric constant of the slab
-loweps = 1.0  # the dielectric constant of the substrate
-r = 0.29  # the radius of the holes with respect to the lattice constance r/a = 0.29, 
-# the r=0.29 above is the experimental value of our Si Kagome sample 
+eps = 12.0  # the dielectric constant of the Si slab
+loweps = 1.0  # the dielectric constant of the substrate (for now this is air... We should change this to simulate substrate of SiO2)
+r = 0.29  # the radius of the holes with respect to the lattice constance r/a = 0.29, this is experimental value of our Si Kagome sample 
 supercell_h = 4  # height of the supercell
-lattice_constant = 1 #Normalized lattice constant // Note the lattice constant is defined as a in litterature
+lattice_constant = 1 #Normalized lattice constant // Note the lattice constant is defined as "a" in litterature
 
 # Define the basis vectors for the hexagonal lattice structure
 basis1=mp.Vector3(math.sqrt(3)/2 * lattice_constant, 0.5 * lattice_constant)
