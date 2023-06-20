@@ -30,7 +30,7 @@ lattice_constant = 1 #Normalized lattice constant // Note the lattice constant i
 basis1=mp.Vector3(math.sqrt(3)/2 * lattice_constant, 0.5 * lattice_constant)
 basis2=mp.Vector3(0, lattice_constant)
 
-# triangular lattice with vertical supercell:
+# Kagome lattice with vertical supercell:
 geometry_lattice = mp.Lattice(
     size=mp.Vector3(1, 1, supercell_h),
     basis1=mp.Vector3(math.sqrt(3)/2 * lattice_constant, 0.5 * lattice_constant, 0.5),
