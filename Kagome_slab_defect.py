@@ -19,10 +19,11 @@ from scipy.optimize import minimize_scalar
 # break up the modes into even and odd (analogous to TE and TM), using
 # the run_zeven and run_zodd functions.
 
-h = 0.5  # the thickness of the slab
+h = 0.5  # the thickness of the slab .. Note that this should be changed to represent a 220nm thick Si slab
 eps = 12.0  # the dielectric constant of the slab
 loweps = 1.0  # the dielectric constant of the substrate
-r = 0.252  # the radius of the holes
+r = 0.29  # the radius of the holes with respect to the lattice constance r/a = 0.29, 
+# the r=0.29 above is the experimental value of our Si Kagome sample 
 supercell_h = 4  # height of the supercell
 lattice_constant = 1 #Normalized lattice constant // Note the lattice constant is defined as a in litterature
 
