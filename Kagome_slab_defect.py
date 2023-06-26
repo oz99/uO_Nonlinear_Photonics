@@ -16,9 +16,9 @@ from scipy.optimize import minimize_scalar
 # break up the modes into even and odd (analogous to TE and TM), using
 # the run_zeven and run_zodd functions.
 
-h = 0.5  # the thickness of the slab
-eps = 12.0  # the dielectric constant of the slab
-loweps = 1.0  # the dielectric constant of the substrate
+h = 0.22  # the thickness of the Si slab typically 220nm in CMOS fabs
+eps = 12.0  # the dielectric constant of SiO2
+loweps = 4.5  # the dielectric constant of the substrate which is SiO2 right now
 supercell_h = 4  # height of the supercell
 
 
@@ -27,15 +27,16 @@ num_bands = 8
 resolution = 32
 r=0.29 # the radius of the holes
 a=1 # lattice constant
-geometry = [mp.Block(
+geometry = [
+    mp.Block(
         material=mp.Medium(epsilon=loweps),
         center=mp.Vector3(z=0.25 * supercell_h),
         size=mp.Vector3(mp.inf, mp.inf, 0.5 * supercell_h),
     ),
     mp.Block(material=mp.Medium(epsilon=eps), size=mp.Vector3(mp.inf, mp.inf, h)),
-            mp.Cylinder(r, center=mp.Vector3(0,0), material=mp.Medium(epsilon=1)),
-            mp.Cylinder(r, center=mp.Vector3(0, a), material=mp.Medium(epsilon=1)),
-            mp.Cylinder(r, center=mp.Vector3(a,0), material=mp.Medium(epsilon=1))
+    mp.Cylinder(r, center=mp.Vector3(0,0), material=mp.Medium(epsilon=1)),
+    mp.Cylinder(r, center=mp.Vector3(0, a), material=mp.Medium(epsilon=1)),
+    mp.Cylinder(r, center=mp.Vector3(a,0), material=mp.Medium(epsilon=1))
             ]
 geometry_lattice = mp.Lattice(size=mp.Vector3(2*a,2*a),
                               basis1=mp.Vector3(1,0),
@@ -72,17 +73,17 @@ ms.run_te()
 te_freqs = ms.all_freqs
 te_gaps = ms.gap_list
 
-fig, ax = plt.subplots()
-x = range(len(tm_freqs))
-# Plot bands
-# Scatter plot for multiple y values, see https://stackoverflow.com/a/34280815/2261298
-for xz, tmz, tez in zip(x, tm_freqs, te_freqs):
-    ax.scatter([xz]*len(tmz), tmz, color='blue')
-    ax.scatter([xz]*len(tez), tez, color='red', facecolors='none')
-ax.plot(tm_freqs, color='blue')
-ax.plot(te_freqs, color='red')
-ax.set_ylim([0, 1])
-ax.set_xlim([x[0], x[-1]])
+# fig, ax = plt.subplots()
+# x = range(len(tm_freqs))
+# # Plot bands
+# # Scatter plot for multiple y values, see https://stackoverflow.com/a/34280815/2261298
+# for xz, tmz, tez in zip(x, tm_freqs, te_freqs):
+#     ax.scatter([xz]*len(tmz), tmz, color='blue')
+#     ax.scatter([xz]*len(tez), tez, color='red', facecolors='none')
+# ax.plot(tm_freqs, color='blue')
+# ax.plot(te_freqs, color='red')
+# ax.set_ylim([0, 1])
+# ax.set_xlim([x[0], x[-1]])
 
 
 ##For TE bands only Comment out previous code and comment out gaps in tm_mode
@@ -99,9 +100,9 @@ ax.set_ylim([0, 0.4])
 ax.set_xlim([x[0], x[-1]])
 
 # Plot gaps
-for gap in tm_gaps:
-    if gap[0] > 1:
-        ax.fill_between(x, gap[1], gap[2], color='blue', alpha=0.2)
+# for gap in tm_gaps:
+#     if gap[0] > 1:
+#         ax.fill_between(x, gap[1], gap[2], color='blue', alpha=0.2)
 
 for gap in te_gaps:
     if gap[0] > 1:
@@ -111,7 +112,7 @@ for gap in te_gaps:
 
 
 # Plot labels
-ax.text(12, 0.04, 'TM bands', color='blue', size=15)
+# ax.text(12, 0.04, 'TM bands', color='blue', size=15)
 ax.text(13.05, 0.235, 'TE bands', color='red', size=15)
 
 points_in_between = (len(tm_freqs) - 4) / 3
