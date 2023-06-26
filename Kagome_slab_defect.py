@@ -4,12 +4,9 @@ from meep import mpb
 import matplotlib.pyplot as plt
 from scipy.optimize import minimize_scalar
 
-# Author: Ozan Oner
-# Photonic crystal slab consisting of a Kagome lattice of air
+# Photonic crystal slab consisting of a triangular lattice of air
 # holes in a finite_thickness dielectric slab, optionally with a
-# substrate on one side of the slab. 
-
-# For similar case using triangular lattice see the paper: S. G. Johnson,
+# substrate on one side of the slab.  See the paper: S. G. Johnson,
 # S. Fan, P. R. Villeneuve, J. D. Joannopoulos, L. A. Kolodziejski,
 # "Guided modes in photonic crystal slabs," PRB 60, 5751 (August
 # 1999).
@@ -19,18 +16,18 @@ from scipy.optimize import minimize_scalar
 # break up the modes into even and odd (analogous to TE and TM), using
 # the run_zeven and run_zodd functions.
 
-h = 0.5  # the thickness of the slab .. Note that this should be changed to represent a 220nm thick Si slab
-eps = 12.0  # the dielectric constant of the Si slab
-loweps = 1.0  # the dielectric constant of the substrate (for now this is air... We should change this to simulate substrate of SiO2)
-r = 0.29  # the radius of the holes with respect to the lattice constance r/a = 0.29, this is experimental value of our Si Kagome sample 
+h = 0.5  # the thickness of the slab
+eps = 12.0  # the dielectric constant of the slab
+loweps = 1.0  # the dielectric constant of the substrate
+r = 0.29  # the radius of the holes
 supercell_h = 4  # height of the supercell
-lattice_constant = 1 #Normalized lattice constant // Note the lattice constant is defined as "a" in litterature
+lattice_constant = 1
 
 # Define the basis vectors for the hexagonal lattice structure
 basis1=mp.Vector3(math.sqrt(3)/2 * lattice_constant, 0.5 * lattice_constant)
 basis2=mp.Vector3(0, lattice_constant)
 
-# Kagome lattice with vertical supercell:
+# triangular lattice with vertical supercell:
 geometry_lattice = mp.Lattice(
     size=mp.Vector3(1, 1, supercell_h),
     basis1=mp.Vector3(math.sqrt(3)/2 * lattice_constant, 0.5 * lattice_constant, 0.5),
