@@ -19,38 +19,36 @@ from scipy.optimize import minimize_scalar
 h = 0.5  # the thickness of the slab
 eps = 12.0  # the dielectric constant of the slab
 loweps = 1.0  # the dielectric constant of the substrate
-r = 0.29  # the radius of the holes
 supercell_h = 4  # height of the supercell
-lattice_constant = 1
 
-# Define the basis vectors for the hexagonal lattice structure
-basis1=mp.Vector3(math.sqrt(3)/2 * lattice_constant, 0.5 * lattice_constant)
-basis2=mp.Vector3(0, lattice_constant)
 
-# triangular lattice with vertical supercell:
-geometry_lattice = mp.Lattice(
-    size=mp.Vector3(1, 1, supercell_h),
-    basis1=mp.Vector3(math.sqrt(3)/2 * lattice_constant, 0.5 * lattice_constant, 0.5),
-    basis2=mp.Vector3(0, lattice_constant, -0.5),
-)
 
-geometry = [
-    mp.Block(
+num_bands = 8
+resolution = 32
+r=0.138 # the radius of the holes
+a=0.3 # lattice constant
+geometry = [mp.Block(
         material=mp.Medium(epsilon=loweps),
         center=mp.Vector3(z=0.25 * supercell_h),
         size=mp.Vector3(mp.inf, mp.inf, 0.5 * supercell_h),
     ),
     mp.Block(material=mp.Medium(epsilon=eps), size=mp.Vector3(mp.inf, mp.inf, h)),
-    mp.Cylinder(r, center=mp.Vector3(0, 0), material=mp.air, height=supercell_h),
-    mp.Cylinder(r, center=mp.Vector3(basis1.x/2, basis1.y/2), material=mp.air, height=supercell_h),
-    mp.Cylinder(r, center=mp.Vector3(basis2.x/2, basis2.y/2), material=mp.air, height=supercell_h),
-]
+            mp.Cylinder(r, center=mp.Vector3(0,0), material=mp.Medium(epsilon=1)),
+            mp.Cylinder(r, center=mp.Vector3(0, a), material=mp.Medium(epsilon=1)),
+            mp.Cylinder(r, center=mp.Vector3(a,0), material=mp.Medium(epsilon=1))
+            ]
+geometry_lattice = mp.Lattice(size=mp.Vector3(2*a,2*a),
+                              basis1=mp.Vector3(1,0),
+                              basis2=mp.Vector3(1,math.sqrt(3)),
+                              basis_size=mp.Vector3(1,1,1)
+)
+
 
 # Define the k-points
 k_points = [
     mp.Vector3(),                          # Gamma
     mp.Vector3(0.5, 0),                    # M
-    mp.Vector3(1./3 * lattice_constant, 1./3 * lattice_constant), # K
+    mp.Vector3(1./3 * a, 1./3 * a), # K
     mp.Vector3(),                          # Gamma
 ]
 
