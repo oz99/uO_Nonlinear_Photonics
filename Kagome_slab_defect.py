@@ -25,8 +25,8 @@ supercell_h = 4  # height of the supercell
 
 num_bands = 8
 resolution = 32
-r=0.138 # the radius of the holes
-a=0.3 # lattice constant
+r=0.29 # the radius of the holes
+a=1 # lattice constant
 geometry = [mp.Block(
         material=mp.Medium(epsilon=loweps),
         center=mp.Vector3(z=0.25 * supercell_h),
@@ -84,6 +84,20 @@ ax.plot(te_freqs, color='red')
 ax.set_ylim([0, 1])
 ax.set_xlim([x[0], x[-1]])
 
+
+##For TE bands only Comment out previous code and comment out gaps in tm_mode
+fig, ax = plt.subplots()
+x = range(len(te_freqs))
+# Plot bands
+# Scatter plot for multiple y values, see https://stackoverflow.com/a/34280815/2261298
+for xz, tez in zip(x, te_freqs):
+    # ax.scatter([xz]*len(tmz), tmz, color='blue')
+    ax.scatter([xz]*len(tez), tez, color='red', facecolors='none')
+# ax.plot(tm_freqs, color='blue')
+ax.plot(te_freqs, color='red')
+ax.set_ylim([0, 0.4])
+ax.set_xlim([x[0], x[-1]])
+
 # Plot gaps
 for gap in tm_gaps:
     if gap[0] > 1:
@@ -92,6 +106,8 @@ for gap in tm_gaps:
 for gap in te_gaps:
     if gap[0] > 1:
         ax.fill_between(x, gap[1], gap[2], color='red', alpha=0.2)
+
+
 
 
 # Plot labels
