@@ -1,6 +1,8 @@
 ## Author: Ozan W. Oner & Shahram Moradi
 ## Please contact ooner083@uottawa.ca for any questions
 ## This file is intended to generate a GDS file with Varying widths
+## Please note that this file in its current state only generates 1 waveguide at a user-inputted width
+## Our goal would be to generate n waveguides with w varying parameters around a defined start/end point or even a centre point
 
 import numpy as np
 import gdspy
