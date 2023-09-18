@@ -1,5 +1,7 @@
 # uO Nonlinear Photonics
-We are a research group that conducts design, fabrication and testing in nonlinear photonics. Our goal is to develop integrated nonlinear photonic devices for applications in optical communications, sensing, and quantum information processing. We are located at the University of Ottawa, Canada.
+We are a research group that conducts design, fabrication and characterization in nonlinear photonics. Our goal is to develop integrated nonlinear photonic devices for applications in optical communications, sensing, and quantum information processing. We are located at the University of Ottawa, Canada. 
+
+Our website can be found at the following link: https://www.nonlinearphotonics.ca/
 
 ## Semiconductor Statistics
 
@@ -17,5 +19,11 @@ They key data can be found below:
 
 ## Research Areas
 
+### III-V Integrated Photonics
+We design, fabricate, and characterize integrated photonic devices based on III-V semiconductors and III-nitrides for nonlinear and quantum applications.
 
-## Research Project
+### Terahertz Photonics
+We study the nonlinear optical properties of various materials at THz frequencies.
+
+### Metamaterials
+We explore nanostructuring and local-field effects as mechanisms to control and enhance the optical properties of materials.
