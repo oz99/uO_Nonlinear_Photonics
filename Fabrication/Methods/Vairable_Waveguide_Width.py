@@ -1,3 +1,7 @@
+## Author: Ozan W. Oner & Shahram Moradi
+## Please contact ooner083@uottawa.ca for any questions
+## This file is intended to generate a GDS file with Varying widths
+
 import numpy as np
 import gdspy
 import os
