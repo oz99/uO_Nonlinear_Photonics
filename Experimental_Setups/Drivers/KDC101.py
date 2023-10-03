@@ -9,7 +9,7 @@ Ver 0.2
 12-Sep_2023 | Version 1.1 | Ozan W. Oner | Updated functionality for rotaional stages.
 
 
-@author: Daniel Hutama; dhuta087@uottawa.ca
+@authors: Ozan Oner (ooner083@uottawa.ca) and Daniel Hutama (dhuta087@uottawa.ca)
 """
 
 from pylablib.devices import Thorlabs # pip install --user pylablib
