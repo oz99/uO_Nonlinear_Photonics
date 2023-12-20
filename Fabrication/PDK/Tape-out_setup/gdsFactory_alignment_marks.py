@@ -41,6 +41,7 @@ def align_mark(side):
 
     am2.mirror().movex(0, side)
     am3.rotate(180).move([side, side])
+    
     am4.mirror_y().movey(0, side)
     return c
 
