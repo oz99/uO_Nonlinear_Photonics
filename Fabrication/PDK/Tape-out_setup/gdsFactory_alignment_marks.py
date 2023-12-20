@@ -46,3 +46,4 @@ def align_mark(side):
 
 am = align_mark(500)
 am.show()
+#am.write_gds("alignment_marks.gds")
