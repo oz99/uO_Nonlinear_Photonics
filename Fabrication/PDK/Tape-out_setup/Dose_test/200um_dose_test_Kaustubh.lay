@@ -1,0 +1,14 @@
+[VARIABLES]
+
+[PREFERENCES]
+LayerOrder=1
+
+[LAYER]
+;<LayerNo>=<Name>,<Border>,<Fill>,<Pattern>,<Order>,<Usable>,<Active>,<Thickness>,<Connections>,<MDBEntry>
+0=Layer 0,1,1,0,0,1,1,1000,,-1
+2=Layer 2,2,2,7,2,1,1,1000,,-1
+6=Layer 6,6,6,7,6,1,1,1000,,-1
+7=Layer 7,7,7,7,7,1,1,1000,,-1
+61=Automatic marks,2,2,0,61,1,1,1000,,-1
+62=Automatic GDSII ALWF with Images,41,41,0,62,1,1,1000,,-1
+63=Manual marks,4,4,0,63,1,1,1000,,-1

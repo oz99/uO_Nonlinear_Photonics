@@ -11,7 +11,7 @@ PDK.activate()
 @gf.cell
 def align_mark_unit():
     c = gf.Component()
-    center = c << gf.components.cross(length=15, width=1, layer=(1, 0)) # central cross
+    center = c << gf.components.cross(length=15, width=1, layer=(2, 0)) # central cross
     # create references for the rectangles at the tips of the cross:
     rect1 = c << gf.components.rectangle(size=(20, 5), layer=(1, 0))
     rect2 = c << gf.components.rectangle(size=(20, 5), layer=(1, 0))
@@ -45,5 +45,7 @@ def align_mark(side):
     return c
 
 am = align_mark(500)
+
 am.show()
+
 #am.write_gds("alignment_marks.gds")
