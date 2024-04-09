@@ -19,25 +19,25 @@ if __name__ == "__main__":
     #fname = sys.argv[0].split(".")[0] # get script name
     fname = "DoseTest" # get script name
     # Examples
-    lib = gdspy.GdsLibrary(unit=1e-9, precision=1e-9)
+    lib = gdspy.GdsLibrary(unit=1e-6, precision=1e-9)
     #------------------------------------
-    chip_h = 18e6
-    chip_w = 18e6
-    wf_l = 100e3
+    chip_h = 18e6/1000
+    chip_w = 18e6/1000
+    wf_l = 100e3/1000
     #load cells
     # libLig = gdspy.GdsLibrary(infile=loadlibname)
 
     #---------------------
     #cell for the chip size and chip facets
-    chip = lib.new_cell("NChip")
+    #chip = lib.new_cell("NChip")
 
     #---------------------
     #cell for the write field
-    wf = lib.new_cell("WF")
+    #wf = lib.new_cell("WF")
 
     #---------------------
     #cell for the antennas
-    ant = lib.new_cell("Antenna")
+    ant = lib.new_cell("Dose_Antenna")
 
     # wf.add(gdspy.Rectangle((0, 0), (wf_l, wf_l), layer=0))
 
@@ -171,46 +171,50 @@ if __name__ == "__main__":
 
     #---------------------
     # Positive resist case
-    delta_x_V = 450 # horizonal offset between V-shape antennas
-    delta_y_V = 900 # vertical offset between V-shape antennas
-    delta_x_U = 1500 # horizonal offset between U-shape antennas
-    delta_y_U = 1500 # vertical offset between U-shape antennas
+
+    
+
+    
     n_x = 2 # number of antennas in x direction
     n_y = 11 # number of antennas in y direction
-    offset_x = 2.5e3 # horizontal margin
-    offset_y = 2.5e3 # vertical margin
-    sqr_l = 20 # length of square for proximity correction
+    offset_x = 2.5e3/1000 # horizontal margin
+    offset_y = 2.5e3/1000 # vertical margin
+    sqr_l = 20/1000 # length of square for proximity correction
     #---------------------
     # antenna parameters
-    l1V = 205
-    w1V = 95
-    l2V = 190
-    w2V = 95
+    l1V = 170/1000
+    w1V = 80/1000
+    l2V = 160/1000
+    w2V = 80/1000
+    delta_x_V = 450/1000 # horizonal offset between V-shape antennas
+    delta_y_V = 900/1000 # vertical offset between V-shape antennas
 
-    h1U = 160
-    w1U = 120
-    h2U = 100
-    w2U = 320
+    h1U = 160/1000
+    w1U = 120/1000
+    h2U = 100/1000
+    w2U = 320/1000
+    delta_x_U = 1500/1000 # horizonal offset between U-shape antennas
+    delta_y_U = 1500/1000 # vertical offset between U-shape antennas
 
     #---------------------
     # alignment mark parameters
-    len_mark_s = 2e3
-    width_mark_s = 500
-    side_mark_s = 20e3
+    len_mark_s = 2e3/1000
+    width_mark_s = 500/1000
+    side_mark_s = 20e3/1000
 
-    len_mark_g = 40e3
-    width_mark_g = 20e3
-    side_mark_g = 100e3
+    len_mark_g = 40e3/1000
+    width_mark_g = 20e3/1000
+    side_mark_g = 100e3/1000
 
     #---------------------
     #function for the dose test building block
     def DoseTest(x0, y0):
     
-        AlMk(x0, y0, len_mark_s, width_mark_s, side_mark_s, 1)
+        AlMk(x0, y0, len_mark_s, width_mark_s, side_mark_s, 2)
 
         # Vertical dose label with height 1.5
         for i, v in enumerate("ABCDEFGHIJK"):
-            label = gdspy.Text(v, 1000, (2.4e3 + x0, 2.1e3+i*delta_y_U + y0), horizontal=False, layer=1)
+            label = gdspy.Text(v, 1, (2.4e3/1000 + x0, 2.1e3/1000+i*delta_y_U + y0), horizontal=False, layer=1)
             ant.add(label)
 
         for i in range(n_x):
@@ -235,14 +239,14 @@ if __name__ == "__main__":
             for j in range(n_y):
                 prox_corr_U(h1U, w1U, h2U, w2U, sqr_l, offset_x+(i-1+5*n_x)*delta_x_U + x0, offset_y+j*delta_y_U + y0, 1)
 
-    AlMk(-3*width_mark_g, -3*width_mark_g, len_mark_g, width_mark_g, side_mark_g+6*width_mark_g, 1)
+    AlMk(-3*width_mark_g, -3*width_mark_g, len_mark_g, width_mark_g, side_mark_g+6*width_mark_g, 2)
 
     for i in range(2):
             for j in range(2):
                 DoseTest(i*4*side_mark_s, j*4*side_mark_s)
     DoseTest(wf_l/2 - side_mark_s/2, wf_l/2 - side_mark_s/2)
 
-    rad = 150
+    rad = 150/1000
     pitch = 5*rad
     for i in range(17):
         ant.add(gdspy.Round((wf_l/2, offset_y+i*(pitch+rad)), rad, tolerance=0.01))
