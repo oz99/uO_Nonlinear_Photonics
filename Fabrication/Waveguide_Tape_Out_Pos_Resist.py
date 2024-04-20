@@ -4,89 +4,83 @@ import gdsfactory as gf
 from gdsfactory.generic_tech import get_generic_pdk
 from shapely.geometry.polygon import Polygon
 import shapely as sp
+import argparse
 
 PDK = get_generic_pdk()
 PDK.activate()
 
-@gf.cell
-def align_mark_unit():
-    c = gf.Component()
-    center = c << gf.components.cross(length=15, width=1, layer=(2, 0)) # central cross
-    # create references for the rectangles at the tips of the cross:
-    rect1 = c << gf.components.rectangle(size=(20, 5), layer=(2, 0))
-    rect2 = c << gf.components.rectangle(size=(20, 5), layer=(2, 0))
-    rect3 = c << gf.components.rectangle(size=(20, 5), layer=(2, 0))
-    rect4 = c << gf.components.rectangle(size=(20, 5), layer=(2, 0))
-    # position rectangles:
-    rect1.center = center.center
-    rect2.center = center.center
-    rect3.center = center.center
-    rect4.center = center.center
-    rect1.xmin = center.xmax
-    rect2.rotate(90).ymax = center.ymin
-    rect3.xmax = center.xmin
-    rect4.rotate(90).ymin = center.ymax
-
-    ##Add smaller alignment marks at the edge of the reference cross. Up to 100nm size. Expose these at 10kV.add
-    # Burn dot in center and conduct WFA in there.
-
-    #Create Write-Field-Alignment Marks at the edge of the reference cross
-    rect5 = c << gf.components.rectangle(size=(30, 2.5), layer=(61, 0))
-    rect6 = c << gf.components.rectangle(size=(30, 2.5), layer=(61, 0))
-    # position write field alignment marks
-
-    ## Align the following two marks so they are in the top right of each alignment mark
-    rect6.rotate(90).ymax = center.ymax
-    rect6.move([27,17])
-    rect5.center = (rect6.xmin, rect6.ymax)
-    rect5.move((rect6.xmin - rect5.xmax, rect6.ymax - rect5.ymin))
 
 
+def main(args):
+    # Activating the generic PDK
+    PDK = get_generic_pdk()
+    PDK.activate()
+
+    width = args.width
+    length1 = args.length1
+    layer = args.layer
+    overdose = args.overdose
+    underdose = args.underdose
+    iteration_width = args.iteration_width
+    MinWidth = args.MinWidth
+    MaxWidth = args.MaxWidth
+
+    c = gf.Component("L_shape_proximity_correction")
+    #center = c << gf.components.rectangle(size=(length1, width), layer=layer)
+    widths = []
+
+    #number of waveguide steps will be determined
+
+    steps = int((MaxWidth-MinWidth)/iteration_width)
+
+    for i in range(0, steps):
+        width = width + iteration_width
 
 
-    #rect5.center = center.center
-    #rect5.xmax = center.xmax
-    #rect6.center = center.center
-    # rect6.rotate(90).ymax = center.ymax
+        rect = c << gf.components.rectangle(size=(length1, width), layer=layer)
+
+        widths.append(width-(iteration_width/2)) 
+        total_y = sum(widths)      
+        rect.center = ([length1/2,total_y+(1000*i)])
 
 
-    # L shape structure at the edge
-    L_shape = c << gf.components.L(width=40, size=(220, 220), layer=(2, 0))
-    L_shape.move([-130, -130])
-    return c
+        ## Add rectangles to all corners of the L shape
+    rect1 = c << gf.components.rectangle(size=(overdose, overdose), layer=layer)
+    rect2 = c << gf.components.rectangle(size=(overdose, overdose), layer=layer)
+    rect3 = c << gf.components.rectangle(size=(overdose, overdose), layer=layer)
+    rect4 = c << gf.components.rectangle(size=(overdose, overdose), layer=layer)
+ 
 
-@gf.cell
-def align_mark(side):
-    c = gf.Component()
-    am1 = c << align_mark_unit()
-    am2 = c << align_mark_unit()
-    am3 = c << align_mark_unit()
-    am4 = c << align_mark_unit()
+    rect1.center = ([0,0])
+    rect2.center = ([0,width])
+    rect3.center = ([length1,0])
+    rect4.center = ([length1,width])
+    
+    # Save the component to a GDSII file with high precision
+    #d.write_gds("L_meta_prox.gds",with_metadata=True)
+    
+    gdspath = c.write_gds("L_meta_prox.gds", precision=1e-9, unit=1e-9,with_metadata=True)
 
-    am2.mirror().movex(0, side)
-    am3.rotate(180).move([side, side])
-    am4.mirror_y().movey(0, side)
+    # Display the GDSII file using gdsfactory's viewer
+    gf.show(gdspath)
 
-    am5 = c << align_mark_unit()
-    am6 = c << align_mark_unit()
+    # gf.write_gds("L_w_proximity.gds", with_metadata=True)
 
-    # am5.move([side, 0])
-    # am6.move([0, side])
-    return c
+    ## Extract and Save Netlist [Connections, Instances, Placements, Ports, Name]
+    #elems_yaml = c.get_netlist_yaml()
 
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--width', type=int, default=500, help='Width of the waveguide')
+    parser.add_argument('--length1', type=int, default=1000000, help='Length of the waveguide')
+    parser.add_argument('--layer', type=int, default=1, help='Layer number for the L shape')
+    parser.add_argument('--overdose', type=int, default=50, help='Overdose on 270 deg edges')
+    parser.add_argument('--underdose', type=int, default=50, help='Underdose on 90 deg edges')
+    parser.add_argument('--iteration_width', type=int, default=10, help='spacing between waveguides')
+    parser.add_argument('--MinWidth', type=int, default=500, help='Minimum Width of the waveguide')
+    parser.add_argument('--MaxWidth', type=int, default=800, help='Maximum Width of the waveguide')
 
-am = align_mark(500)
-
-meta = gf.read.import_gds('c:\\UO\\Git_dump\\uO_Nonlinear_Photonics\\Fabrication\\Metasurfaces\\metasurface.gds')
-
-parent_component = gf.Component("parent_layout")
-
-am_ref = parent_component.add_ref(am)
-my_gds_ref = parent_component.add_ref(meta)
-
-# Optionally, position the components
-am_ref.move((0, 0))  # Position of am component, change as needed
-my_gds_ref.move((50, 50)) #my_gds_ref.move((50, 50))  # Position of my_gds component, change as needed
-
-parent_component.show()
+    parser.add_argument('-NetlistNew', action='store_true', default=True, help='Set True to Activate (default: False)')
+    args = parser.parse_args()
+    main(args)
 

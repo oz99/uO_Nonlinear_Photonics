@@ -48,9 +48,6 @@ am = align_mark(500)
 
 meta = gf.read.import_gds('c:\\UO\\Git_dump\\uO_Nonlinear_Photonics\\Fabrication\\Metasurfaces\\metasurface.gds')
 dose = gf.read.import_gds('c:\\UO\\Git_dump\\uO_Nonlinear_Photonics\\Fabrication\\Metasurfaces\\DoseTest.gds')
-
-
-
 parent_component = gf.Component("parent_layout")
 
 am_ref = parent_component.add_ref(am)

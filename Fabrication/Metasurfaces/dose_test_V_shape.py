@@ -222,6 +222,7 @@ if __name__ == "__main__":
                 ant.add(Lshape2(l1V, w1V, l2V, w2V, offset_x+(i+1)*delta_x_U + x0, offset_y+j*delta_y_U + y0, 1))
 
         for i in range(n_x):
+            
             for j in range(n_y):
                 prox_corr_L(l1V, w1V, l2V, w2V, sqr_l, offset_x+(i-1+2*n_x)*delta_x_U + x0, offset_y+j*delta_y_U + y0, 1)
 
