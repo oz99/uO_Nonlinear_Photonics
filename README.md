@@ -17,7 +17,7 @@ https://www.tandfonline.com/doi/pdf/10.1080/23746149.2022.2097020
 We also study the nonlinear optical properties of various materials at THz frequencies.
 
 ### Metamaterials
-Nanostructuring of local-field effects as mechanisms to control and enhance the optical properties of materials are also being studies.
+Nanostructuring of local-field effects as mechanisms to control and enhance the optical properties of materials are also being studied.
 
 
 
