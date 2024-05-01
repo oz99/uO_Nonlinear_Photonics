@@ -1,3 +1,8 @@
+### Author: Ozan W. Oner
+### email: ooner083@uottawa
+### This code serves as the basis of the layers for the Nonlinear on Insulator PDK. 
+### These parameter stack are for InGaAsP-On-Insulator
+
 import pathlib
 from functools import partial
 import pytest
