@@ -7,7 +7,7 @@ import numpy as np  # for logarithm
 def mw_to_dbm(power_mw):
     return 10 * np.log10(power_mw)
 
-def generate_offset_plots_for_wavelength_range(all_file_names, directory, start_wavelength, end_wavelength, step, offset_step):
+def generate_offset_plots_for_wavelength_range(all_file_names, data_directory, save_directory ,start_wavelength, end_wavelength, step, offset_step):
     wavelengths = [f"{w}.0nm" for w in range(start_wavelength, end_wavelength + 1, step)]
     saved_paths = {}
 
@@ -58,16 +58,18 @@ def generate_offset_plots_for_wavelength_range(all_file_names, directory, start_
         elif device == 'L010-D0':
             device_length = 21.5
 
-        plt.xlabel('Wavelength (nm)', fontsize=14)
-        plt.ylabel('Normalized Spectral Power (a.u.)', fontsize=14)
-        plt.title(f'SPM at {wavelength} for Hugyens MetaWaveguide L={device_length}um')
-        plt.legend(loc='upper right')
+        plt.xlabel('Wavelength (nm)', fontsize=24)
+        plt.ylabel('Normalized Spectral Power (a.u.)', fontsize=24)
+        plt.xticks(fontsize=20)
+        plt.yticks(fontsize=20)
+        plt.title(f'SPM at {wavelength} for Hugyens MetaWaveguide L={device_length}um',fontsize=24)
+        plt.legend(loc='upper right',fontsize=12)
 
-        device_folder = os.path.join(directory, device)
+        device_folder = os.path.join(data_directory, device)
         if not os.path.exists(device_folder):
             os.makedirs(device_folder)
 
-        save_path = os.path.join(device_folder, f'offset_plot_{wavelength}.png')
+        save_path = os.path.join(save_directory, f'Huygens SPM L={device_length}um at {wavelength}.png')
         plt.savefig(save_path)
         plt.close()
 
@@ -130,12 +132,14 @@ def generate_offset_plots_for_wavelength_range(all_file_names, directory, start_
 
 
 # Adjusted directory path for your environment
-base_directory = 'c:\\Users\\Test\\Downloads\\Huygens_Data\\NA-WG-Straight\\18-19_dec_strong_but_scattered'
+data_directory = 'c:\\Users\\Test\\Downloads\\Huygens_Data\\NA-WG-Straight\\18-19_dec_strong_but_scattered'
+
+save_directory ='c:\\Users\\Test\\Downloads'
 
 # Loop over devices L0 to L10
-for device in [f"L0{i}-D0" if i < 10 else f"L0{i}-D0" for i in range(10)]:
+for device in [f"L0{i}-D0" if i < 11 else f"L0{i}-D0" for i in range(11)]:
     # File pattern to match all CSV files for the current device in the directory
-    file_pattern = os.path.join(base_directory, f"SPM-NA-WG-STRAIGHT-{device}-*.0nm-*-18dec23.csv") 
+    file_pattern = os.path.join(data_directory, f"SPM-NA-WG-STRAIGHT-{device}-*.0nm-*.csv") 
                                                 #SPM-NA-WG-STRAIGHT-L03-D0-1500.0nm-0.23869mW-19dec23
 
 
@@ -143,7 +147,7 @@ for device in [f"L0{i}-D0" if i < 10 else f"L0{i}-D0" for i in range(10)]:
     all_file_names = glob.glob(file_pattern)
 
     # Generate and save plots for wavelengths from 1500 nm to 1560 nm
-    saved_paths_for_range = generate_offset_plots_for_wavelength_range(all_file_names, base_directory, 1550, 1570, 1,0.3) #figure out a way of doing 0.5nm. May or may not need to switch to Angstroms
+    saved_paths_for_range = generate_offset_plots_for_wavelength_range(all_file_names, data_directory, save_directory,1500, 1560, 10,0.3) #figure out a way of doing 0.5nm. May or may not need to switch to Angstroms
 
     # Print the paths of the saved plots
     for wavelength, path in saved_paths_for_range.items():
