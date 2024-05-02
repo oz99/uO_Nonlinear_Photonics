@@ -5,7 +5,7 @@
 
 import pathlib
 from functools import partial
-import pytest
+import pytest 
 from pytest_regressions.data_regression import DataRegressionFixture
 import gdsfactory as gf
 from gdsfactory.component import Component
@@ -25,26 +25,21 @@ from gdsfactory.technology import LayerLevel, LayerStack
 nm = 1e-3
 
 class LayerStackParameters:
-    Si: Layer = (1, 0)  # Example custom layer for Silicon, layer number 1, datatype 0
-    SiN: Layer = (2, 0)  # Example custom layer for Silicon Nitride, layer number 2, datatype 0
-
     ##################Passive Layer #######################
     thickness_wg: float = 220 * nm
     thickness_slab_deep_etch: float = 90 * nm
     thickness_slab_shallow_etch: float = 150 * nm
-    sidewall_angle_wg: float = 10
+    sidewall_angle_wg: float = 0 ## Will be changed depending on RIE-ICP etching aspect ratio during fabrication
 
 
     ###################Active Layer #######################
-    thickness_indium_phosphide = 500*nm
+    #thickness_n_doped_InP = X * nm #Values are still under consideration
+    #thickness_p_doped_InP = X * nm #Values are still under consideration
+    ## indium_phosphide = 500*nm
 
     ##################Oxide (Insulation) Layer#######################
-    thickness_clad: float = 3.0
-    box_thickness: float = 3.0 ## Do we want 2um instead
-    thickness_nitride: float = 350 * nm
-    thickness_ge: float = 500 * nm
-    gap_silicon_to_nitride: float = 100 * nm
-    
+    thickness_clad: float = 3.0 ## Can also be changed to 2um 
+    box_thickness: float = 3.0 ## Can also be changed to 2um 
 
     ##################Mealizations Layer#######################
     zmin_heater: float = 1.1
@@ -57,8 +52,14 @@ class LayerStackParameters:
     
     ##################General Stack Parameters#####################
     undercut_thickness: float = 5.0
-    substrate_thickness: float = 10.0
+    substrate_thickness: float = 725.0
 
+
+
+    ################## Layer Assignment #######################
+    
+    AUTO_WFA = Layer = (61,0) # Note this is only for Raith e-beam systems
+    MAN_WFA = Layer = (63,0) # Note this is only for Raith e-beam systems
 
     WAFER: Layer = (99999, 0)
 
@@ -112,14 +113,7 @@ class LayerStackParameters:
     SOURCE: Layer = (110, 0)
     MONITOR: Layer = (101, 0)
 
-### Following were component Specs
-    # def create_layer_stack(self):
-    #     # Define layer levels with thickness and zmin for each layer
-    #     level_Si = gf.LayerLevel(layer=self.layers['Si'], thickness=220, zmin=0)
-    #     level_SiN = gf.LayerLevel(layer=self.layers['SiN'], thickness=150, zmin=220)
-
-    #     # Create and return a LayerStack instance
-    #     return gf.LayerStack(levels=[level_Si, level_SiN])
+### Following were component Specs that still need to be verified
 
     # @gf.cell
     # def waveguide(self, length=10.0, width=0.5):
@@ -141,9 +135,6 @@ def get_layer_stack(
     thickness_slab_shallow_etch=LayerStackParameters.thickness_slab_shallow_etch,
     sidewall_angle_wg=LayerStackParameters.sidewall_angle_wg,
     thickness_clad=LayerStackParameters.thickness_clad,
-    thickness_nitride=LayerStackParameters.thickness_nitride,
-    thickness_ge=LayerStackParameters.thickness_ge,
-    gap_silicon_to_nitride=LayerStackParameters.gap_silicon_to_nitride,
     zmin_heater=LayerStackParameters.zmin_heater,
     zmin_metal1=LayerStackParameters.zmin_metal1,
     thickness_metal1=LayerStackParameters.thickness_metal1,
@@ -259,23 +250,6 @@ def get_layer_stack(
                 mesh_order=2,
             ),
 
-
-            nitride=LayerLevel(
-                layer=LAYER.WGN,
-                thickness=thickness_nitride,
-                zmin=thickness_wg + gap_silicon_to_nitride,
-                material="sin",
-                mesh_order=2,
-            ),
-            ge=LayerLevel(
-                layer=LAYER.GE,
-                thickness=thickness_ge,
-                zmin=thickness_wg,
-                material="ge",
-                mesh_order=1,
-            ),
-
-
             undercut=LayerLevel(
                 layer=LAYER.UNDERCUT,
                 thickness=-undercut_thickness,
@@ -344,15 +318,11 @@ def get_layer_stack(
 
 if __name__ == "__main__":
 
-    LAYER = LayerStackParameters()
-    
-    
+    LAYER = LayerStackParameters()  
     LAYER_STACK = get_layer_stack()
-    # pdk = PDKSetup()
-    # print("Layer stack defined:", pdk.layer_stack)
-    # wg = pdk.waveguide()
-    # rr = pdk.ring_resonator()
+  
     print("Layers have been added to the PDK.")
     print("Layer stack defined:", LayerStackParameters.thickness_wg)
-    print("Layer stack defined:", LayerStackParameters.Si)
+    print("Layer stack defined:", LayerStackParameters.WG)
+    print("Layer stack defined:", LAYER_STACK)
 
