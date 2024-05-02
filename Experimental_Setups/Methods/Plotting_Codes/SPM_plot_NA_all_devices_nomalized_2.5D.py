@@ -34,9 +34,33 @@ def generate_offset_plots_for_wavelength_range(all_file_names, directory, start_
             # Decrement the offset for the next plot so lower powers are below
             offset -= offset_step
 
-        plt.xlabel('Wavelength (nm)')
-        plt.ylabel('Normalized Spectral Power (a.u.)')
-        plt.title(f'Spectral Measurements at {wavelength} for Reference {device}')
+        ## Each device has a specific length. I want to make a list for the lengths of each device and reutn the value to device_length
+        if device == 'L00-D0':
+            device_length = 2.5
+        elif device == 'L01-D0':
+            device_length = 7740
+        elif device == 'L02-D0':
+            device_length = 6020
+        elif device == 'L03-D0':
+            device_length = 2300
+        elif device == 'L04-D0':
+            device_length = 2580
+        elif device == 'L05-D0':
+            device_length = 860
+        elif device == 'L06-D0':
+            device_length = 430
+        elif device == 'L07-D0':
+            device_length = 215
+        elif device == 'L08-D0':
+            device_length = 150.5
+        elif device == 'L09-D0':
+            device_length = 86
+        elif device == 'L010-D0':
+            device_length = 21.5
+
+        plt.xlabel('Wavelength (nm)', fontsize=14)
+        plt.ylabel('Normalized Spectral Power (a.u.)', fontsize=14)
+        plt.title(f'SPM at {wavelength} for Hugyens MetaWaveguide L={device_length}um')
         plt.legend(loc='upper right')
 
         device_folder = os.path.join(directory, device)
@@ -106,12 +130,12 @@ def generate_offset_plots_for_wavelength_range(all_file_names, directory, start_
 
 
 # Adjusted directory path for your environment
-base_directory = 'c:\\Users\\Test\\Downloads\\Huygens_Data\\NA-WG-Straight'
+base_directory = 'c:\\Users\\Test\\Downloads\\Huygens_Data\\NA-WG-Straight\\18-19_dec_strong_but_scattered'
 
 # Loop over devices L0 to L10
 for device in [f"L0{i}-D0" if i < 10 else f"L0{i}-D0" for i in range(10)]:
     # File pattern to match all CSV files for the current device in the directory
-    file_pattern = os.path.join(base_directory, f"SPM-NA-WG-STRAIGHT-{device}-*.0nm-*-19dec23.csv") 
+    file_pattern = os.path.join(base_directory, f"SPM-NA-WG-STRAIGHT-{device}-*.0nm-*-18dec23.csv") 
                                                 #SPM-NA-WG-STRAIGHT-L03-D0-1500.0nm-0.23869mW-19dec23
 
 
@@ -119,7 +143,7 @@ for device in [f"L0{i}-D0" if i < 10 else f"L0{i}-D0" for i in range(10)]:
     all_file_names = glob.glob(file_pattern)
 
     # Generate and save plots for wavelengths from 1500 nm to 1560 nm
-    saved_paths_for_range = generate_offset_plots_for_wavelength_range(all_file_names, base_directory, 1500, 1560, 10,0.15)
+    saved_paths_for_range = generate_offset_plots_for_wavelength_range(all_file_names, base_directory, 1550, 1570, 1,0.3) #figure out a way of doing 0.5nm. May or may not need to switch to Angstroms
 
     # Print the paths of the saved plots
     for wavelength, path in saved_paths_for_range.items():
