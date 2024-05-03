@@ -150,6 +150,8 @@ for device in [f"L0{i}-D0" if i < 11 else f"L0{i}-D0" for i in range(11)]:
     # Fetch all matching file names
     all_file_names = glob.glob(file_pattern)
 
+
+
     # Generate and save plots for wavelengths from 1500 nm to 1560 nm
     saved_paths_for_range = generate_offset_plots_for_wavelength_range(all_file_names, data_directory, save_directory,1500, 1560, 10,0.3) #figure out a way of doing 0.5nm. May or may not need to switch to Angstroms
 
