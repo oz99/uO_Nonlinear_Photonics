@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import glob
 import os
 import numpy as np  # for logarithm
+import re
 
 def mw_to_dbm(power_mw):
     return 10 * np.log10(power_mw)
@@ -29,7 +30,9 @@ def generate_offset_plots_for_wavelength_range(all_file_names, data_directory, s
             max_y_dbm = mw_to_dbm(max_y_value)  # Convert peak power to dBm
             normalized_y = (data['Y'] / max_y_value if max_y_value != 0 else data['Y']) + offset
 
-            plt.plot(data['X'], normalized_y, label=f'Pin={input_power_dbm:.2f}dBm Pout={max_y_dbm:.2f}dBm')
+            plt.plot(data['X'], normalized_y, label=f'P_in={input_power_dbm:.2f}dBm')
+            
+            #plt.plot(data['X'], normalized_y, label=f'Pin={input_power_dbm:.2f}dBm Pout={max_y_dbm:.2f}dBm')
 
             # Decrement the offset for the next plot so lower powers are below
             offset -= offset_step
@@ -62,8 +65,11 @@ def generate_offset_plots_for_wavelength_range(all_file_names, data_directory, s
         plt.ylabel('Normalized Spectral Power (a.u.)', fontsize=24)
         plt.xticks(fontsize=20)
         plt.yticks(fontsize=20)
-        plt.title(f'SPM at {wavelength} for Hugyens MetaWaveguide L={device_length}um',fontsize=24)
-        plt.legend(loc='upper right',fontsize=12)
+        #plt.title(f'SPM at {wavelength} for Hugyens MetaWaveguide L={device_length}um',fontsize=24)
+        plt.legend(loc='upper right',fontsize=16)
+        s = wavelength
+        number = int(re.search(r'\d+', s).group())
+        plt.text(number-20, 0.8, f'Huygens L={device_length}um', fontsize=20)
 
         device_folder = os.path.join(data_directory, device)
         if not os.path.exists(device_folder):
