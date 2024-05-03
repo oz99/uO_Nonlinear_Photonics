@@ -1,8 +1,8 @@
 
 # Introduction
-This Process Design Kit (PDK) allows for users to construct InGaAsP mask layouts by exporting GDSII files. GDSII files are an essential part of the semiconductor fabrication process as it is the file format used during lithography. There are two main lithography techniques, photolithography and electron-beam lithography. Photolithography is used in an industrial setting for Multi-Project Wafer (PMW) runs whereas electron-beam (more commonly known as E-beam) lithography is used in small batches for research and academics.
+This Process Design Kit (PDK) allows for users to construct a Nonlinear On Insulator (NOI) mask layouts by exporting GDSII files. NOI is an SiO2/InGaAsP/SiO2/Si stack, with InGaAsP being the guiding layer. GDSII files are an essential part of the semiconductor fabrication process as it's the file format (schematic) used for lithography. There are two main lithography techniques, photolithography and electron-beam (e-beam) lithography. Photolithography is used in an industrial setting for volume production and Multi-Project Wafer (MPW) runs whereas e-beam lithography is used in small batches for research and academics. E-beam is still an essential part volume manufacturing and/or MPWs as most masks for photolithogry are fabricated using e-beam. 
 
-The layout of this PDK is intended to appease the largest number of users by providing Basic Building Blocks (BBBs), Composite Building Blocks (CBBs) and Basic Technolohy Blocks (BTBs). 
+The layout of this PDK is intended to appease the largest number of users by providing Basic Building Blocks (BBBs), Composite Building Blocks (CBBs) and Basic Technolohy Blocks (BTBs). The BBB design is being done offline. Once verification/characterization of fabricated BBBs is completed we will share the PDK to the public. If you are interested in supporting PDK component development please contact Ozan Oner (ooner083@uottawa.ca).
 
 ### Basic Building Blocks (BBBs)
 BBBs provide the user fundamental control of devices by using the most elementary building blocks.
