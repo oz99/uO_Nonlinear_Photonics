@@ -45,7 +45,7 @@ def generate_offset_plots_for_wavelength_range(all_file_names, data_directory, s
         elif device == 'L02-D0':
             device_length = 6020
         elif device == 'L03-D0':
-            device_length = 2300
+            device_length = 4300
         elif device == 'L04-D0':
             device_length = 2580
         elif device == 'L05-D0':
