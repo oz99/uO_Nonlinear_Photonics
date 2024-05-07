@@ -27,8 +27,20 @@ def main(args):
     length1 = args.length1
     length2 = args.length2
     layer = args.layer
-    overdose = args.overdose
-    underdose = args.underdose
+
+    min_underdose = args.min_underdose
+    max_underdose = args.max_underdose
+    min_overdose = args.min_overdose
+    max_overdose = args.max_overdose
+    steps = args.step
+
+  
+    for i in range(min_underdose, max_underdose, steps):
+        underdose = i
+
+        for j in range(min_overdose, max_overdose, steps):
+            overdose = j    
+        
     
     c = gf.Component("L_shape_proximity_correction")
     center = c << gf.components.L(width=width, size=(length1-width/2, length2-width/2), layer=layer)
@@ -77,9 +89,21 @@ if __name__ == '__main__':
     parser.add_argument('--length1', type=int, default=170, help='Length of the first arm of the L shape')
     parser.add_argument('--length2', type=int, default=160, help='Length of the second arm of the L shape')
     parser.add_argument('--layer', type=int, default=1, help='Layer number for the L shape')
-    parser.add_argument('--overdose', type=int, default=30, help='Overdose on 270 deg edges')
-    parser.add_argument('--underdose', type=int, default=30, help='Underdose on 90 deg edges')
+    # parser.add_argument('--overdose', type=int, default=30, help='Overdose on 270 deg edges')
+    # parser.add_argument('--underdose', type=int, default=30, help='Underdose on 90 deg edges')
 
+    parser.add_argument('--min_underdose', type=int, default=0, help='Underdose on 90 deg edges')
+    parser.add_argument('--max_underdose', type=int, default=40, help='Underdose on 90 deg edges')
+
+    parser.add_argument('--min_overdose', type=int, default=0, help='Underdose on 90 deg edges')
+    parser.add_argument('--max_overdose', type=int, default=40, help='Underdose on 90 deg edges')
+
+    parser.add_argument('--step', type=int, default=5, help='Underdose on 90 deg edges')
+
+
+    
     parser.add_argument('-NetlistNew', action='store_true', default=True, help='Set True to Activate (default: False)')
+
+
     args = parser.parse_args()
     main(args)
