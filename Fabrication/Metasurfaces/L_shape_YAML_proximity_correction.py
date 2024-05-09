@@ -18,6 +18,7 @@ import gdsfactory as gf
 from gdsfactory.generic_tech import get_generic_pdk
 import argparse
 
+
 def main(args):
     # Activating the generic PDK
     PDK = get_generic_pdk()
@@ -61,10 +62,12 @@ def main(args):
     # Save the component to a GDSII file with high precision
     #d.write_gds("L_meta_prox.gds",with_metadata=True)
     
-    gdspath = d.write_gds("L_meta_prox.gds", precision=1e-9, unit=1e-9,with_metadata=True)
+    gdspath = d.write_gds(f"L_meta_prox_corr_{overdose}nm.gds", precision=1e-9, unit=1e-9,with_metadata=True)
 
     # Display the GDSII file using gdsfactory's viewer
     gf.show(gdspath)
+
+    return
 
     # gf.write_gds("L_w_proximity.gds", with_metadata=True)
 
@@ -76,9 +79,9 @@ if __name__ == '__main__':
     parser.add_argument('--width', type=int, default=80, help='Width of the L shape\'s arms')
     parser.add_argument('--length1', type=int, default=170, help='Length of the first arm of the L shape')
     parser.add_argument('--length2', type=int, default=160, help='Length of the second arm of the L shape')
-    parser.add_argument('--layer', type=int, default=1, help='Layer number for the L shape')
-    parser.add_argument('--overdose', type=int, default=30, help='Overdose on 270 deg edges')
-    parser.add_argument('--underdose', type=int, default=30, help='Underdose on 90 deg edges')
+    parser.add_argument('--layer', type=int, default=(1,0), help='Layer number for the L shape')
+    parser.add_argument('--overdose', type=int, default=60, help='Overdose on 270 deg edges')
+    parser.add_argument('--underdose', type=int, default=60, help='Underdose on 90 deg edges')
 
     parser.add_argument('-NetlistNew', action='store_true', default=True, help='Set True to Activate (default: False)')
     args = parser.parse_args()

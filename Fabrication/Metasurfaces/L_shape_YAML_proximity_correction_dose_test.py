@@ -73,7 +73,7 @@ def main(args):
     # Save the component to a GDSII file with high precision
     #d.write_gds("L_meta_prox.gds",with_metadata=True)
     
-    gdspath = d.write_gds("L_meta_prox.gds", precision=1e-9, unit=1e-9,with_metadata=True)
+    gdspath = d.write_gds("L_meta_prox_corr_nm.gds", precision=1e-9, unit=1e-9,with_metadata=True)
 
     # Display the GDSII file using gdsfactory's viewer
     gf.show(gdspath)

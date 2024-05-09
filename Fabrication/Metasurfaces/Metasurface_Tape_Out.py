@@ -51,7 +51,7 @@ def align_mark_unit():
 
 
     # L shape structure at the edge
-    L_shape = c << gf.components.L(width=40, size=(220, 220), layer=(2, 0))
+    L_shape = c << gf.components.L(width=40, size=(200, 200), layer=(2, 0))
     L_shape.move([-130, -130])
     return c
 
@@ -75,18 +75,18 @@ def align_mark(side):
     return c
 
 
-am = align_mark(500)
+am = align_mark(250)
 
-meta = gf.read.import_gds('c:\\UO\\Git_dump\\uO_Nonlinear_Photonics\\Fabrication\\Metasurfaces\\metasurface.gds')
+meta = gf.read.import_gds('c:\\Users\\test\\Proximity_correction_array.gds')
 
-parent_component = gf.Component("parent_layout")
+dose_component = gf.Component("dose_component")
 
-am_ref = parent_component.add_ref(am)
-my_gds_ref = parent_component.add_ref(meta)
+am_ref = dose_component.add_ref(am)
+my_gds_ref = dose_component.add_ref(meta)
 
 # Optionally, position the components
 am_ref.move((0, 0))  # Position of am component, change as needed
 my_gds_ref.move((50, 50)) #my_gds_ref.move((50, 50))  # Position of my_gds component, change as needed
 
-parent_component.show()
+dose_component.show()
 

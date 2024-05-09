@@ -8,57 +8,28 @@ import shapely as sp
 PDK = get_generic_pdk()
 PDK.activate()
 
-@gf.cell
-def align_mark_unit():
-    c = gf.Component()
-    center = c << gf.components.cross(length=15, width=1, layer=(2, 0)) # central cross
-    # create references for the rectangles at the tips of the cross:
-    rect1 = c << gf.components.rectangle(size=(20, 5), layer=(2, 0))
-    rect2 = c << gf.components.rectangle(size=(20, 5), layer=(2, 0))
-    rect3 = c << gf.components.rectangle(size=(20, 5), layer=(2, 0))
-    rect4 = c << gf.components.rectangle(size=(20, 5), layer=(2, 0))
-    # position rectangles:
-    rect1.center = center.center
-    rect2.center = center.center
-    rect3.center = center.center
-    rect4.center = center.center
-    rect1.xmin = center.xmax
-    rect2.rotate(90).ymax = center.ymin
-    rect3.xmax = center.xmin
-    rect4.rotate(90).ymin = center.ymax
-    # L shape structure at the edge
-    L_shape = c << gf.components.L(width=40, size=(220, 220), layer=(2, 0))
-    L_shape.move([-130, -130])
-    return c
+## Note units are in nm.
 
-@gf.cell
-def align_mark(side):
-    c = gf.Component()
-    am1 = c << align_mark_unit()
-    am2 = c << align_mark_unit()
-    am3 = c << align_mark_unit()
-    am4 = c << align_mark_unit()
+#meta = gf.read.import_gds('c:\\UO\\Git_dump\\uO_Nonlinear_Photonics\\Fabrication\\Metasurfaces\\gdsii\\metasurface.gds')
+dose = gf.read.import_gds('c:\\users\\test\\Proximity_correction_array.gds') 
+father_component = gf.Component("father_component")
 
-    am2.mirror().movex(0, side)
-    am3.rotate(180).move([side, side])
-    am4.mirror_y().movey(0, side)
-    return c
+dose_ref = father_component.add_ref(dose)
 
-am = align_mark(500)
+dose_ref1 = father_component.add_ref(dose)
+dose_ref2 = father_component.add_ref(dose)
+dose_ref3 = father_component.add_ref(dose)
 
-meta = gf.read.import_gds('c:\\UO\\Git_dump\\uO_Nonlinear_Photonics\\Fabrication\\Metasurfaces\\gdsii\\metasurface.gds')
-dose = gf.read.import_gds('c:\\UO\\Git_dump\\uO_Nonlinear_Photonics\\Fabrication\\Metasurfaces\\gdsii\\DoseTest.gds')
-parent_component = gf.Component("parent_layout")
 
-am_ref = parent_component.add_ref(am)
-my_gds_ref = parent_component.add_ref(meta)
-dose_ref = parent_component.add_ref(dose)
+dose_ref.move((10000,10000))
+dose_ref1.move((34000,10000))
 
-# Optionally, position the components
-am_ref.move((0, 0))  # Position of am component, change as needed
-my_gds_ref.move((0, 50)) #my_gds_ref.move((50, 50))  # Position of my_gds component, change as needed
-dose_ref.move((490, 200))
 
-parent_component.show()
+dose_ref2.move((10000,35000))
 
+dose_ref3.move((34000,35000))
+
+father_component.show()
+
+gdspath = father_component.write_gds(f"Proximity_correction_dose_test.gds", precision=1e-9, unit=1e-9,with_metadata=True)
 
