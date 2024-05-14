@@ -21,6 +21,10 @@ prox_corr_row = {}
 # Add rows of the component and labels, spaced apart vertically
 for i in range(num_rows):
 
+    ###The following will ensure that all rows imported will have a different cell name.
+    ### This is needed as we want to assign varying dose factors to each row
+    ### This is what makes a varying dose test!
+
     prox_corr_row_file = gf.read.import_gds('c:\\Users\\test\\Proximity_correction_row.gds', read_metadata=True)
     prox_corr_row[i] = gf.Component(f"Proximity_correction_row_{i}")
     prox_corr_row[i].add_ref(prox_corr_row_file)
