@@ -76,6 +76,11 @@ prox50nm_ref.move((2700,0))
 prox55nm_ref.move((3000,0))
 prox60nm_ref.move((3300,0))
 
+
+
+parent_component = parent_component.flatten()
+parent_component.name = "Proximity_correction_row"
+
 parent_component.show() 
 
 gdspath = parent_component.write_gds(f"Proximity_correction_row.gds", precision=1e-9, unit=1e-9,with_metadata=True)
