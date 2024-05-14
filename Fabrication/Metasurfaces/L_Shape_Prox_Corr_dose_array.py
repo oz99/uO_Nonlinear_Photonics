@@ -26,8 +26,11 @@ for i in range(num_rows):
     ### This is what makes a varying dose test!
 
     prox_corr_row_file = gf.read.import_gds('c:\\Users\\test\\Proximity_correction_row.gds', read_metadata=True)
+    prox_corr_row_file = prox_corr_row_file.flatten()
+    prox_corr_row_file.name = f"Proximity_corr_row_{i}"
     prox_corr_row[i] = gf.Component(f"Proximity_correction_row_{i}")
     prox_corr_row[i].add_ref(prox_corr_row_file)
+    #prox_corr_row[i] = prox_corr_row[i].flatten()
     prox_corr_row[i] = array_component << prox_corr_row[i]
     prox_corr_row[i].movey(i * vertical_spacing)
 
