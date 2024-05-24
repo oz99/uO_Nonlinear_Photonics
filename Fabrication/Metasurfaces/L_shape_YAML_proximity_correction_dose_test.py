@@ -88,7 +88,7 @@ if __name__ == '__main__':
     parser.add_argument('--width', type=int, default=80, help='Width of the L shape\'s arms')
     parser.add_argument('--length1', type=int, default=170, help='Length of the first arm of the L shape')
     parser.add_argument('--length2', type=int, default=160, help='Length of the second arm of the L shape')
-    parser.add_argument('--layer', type=int, default=1, help='Layer number for the L shape')
+    parser.add_argument('--layer', type=int, default=(1,0), help='Layer number for the L shape')
     # parser.add_argument('--overdose', type=int, default=30, help='Overdose on 270 deg edges')
     # parser.add_argument('--underdose', type=int, default=30, help='Underdose on 90 deg edges')
 
