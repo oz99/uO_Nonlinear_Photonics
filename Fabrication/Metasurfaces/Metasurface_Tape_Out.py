@@ -42,8 +42,6 @@ def align_mark_unit():
     # rect5.move((rect6.xmin - rect5.xmax, rect6.ymax - rect5.ymin))
 
 
-
-
     #rect5.center = center.center
     #rect5.xmax = center.xmax
     #rect6.center = center.center

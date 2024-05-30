@@ -30,7 +30,7 @@ def generate_offset_plots_for_wavelength_range(all_file_names, data_directory, s
         colors = cmap(np.linspace(0.1, 0.9, num_lines))
 
         # Loop through files and plot
-         
+        for counter, file_name in enumerate(sorted_files[::-1]):  # Reverse the list to start from the highest power
             input_power_mw = float(file_name.split('-')[-2].replace('mW', ''))
             input_power_dbm = mw_to_dbm(input_power_mw)
             data = pd.read_csv(file_name, delimiter='\t', header=None, names=['X', 'Y'])

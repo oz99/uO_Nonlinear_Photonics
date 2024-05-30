@@ -16,7 +16,7 @@ def align_mark_unit():
 
 
     # L shape structure at the edge
-    L_shape = c << gf.components.L(width=500, size=(2000, 2000), layer=(2, 0))
+    L_shape = c << gf.components.L(width=1000, size=(4000, 4000), layer=(2, 0))
     L_shape.move([-130, -130])
     return c
 
@@ -31,7 +31,7 @@ def align_mark(side):
     am2.mirror().movex(0, side)
     am3.rotate(180).move([side, side])
     am4.mirror_y().movey(0, side)
-
+    
     # am5 = c << align_mark_unit()
     # am6 = c << align_mark_unit()
 
