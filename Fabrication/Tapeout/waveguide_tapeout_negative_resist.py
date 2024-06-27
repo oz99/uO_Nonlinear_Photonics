@@ -76,7 +76,7 @@ if __name__ == '__main__':
 
 
     parser.add_argument('--length1', type=int, default=1000000, help='Length of the waveguide')
-    parser.add_argument('--layer', type=int, default=1, help='Layer number for the L shape')
+    parser.add_argument('--layer', type=int, default=(1,0), help='Layer number for the L shape')
 
 
 
