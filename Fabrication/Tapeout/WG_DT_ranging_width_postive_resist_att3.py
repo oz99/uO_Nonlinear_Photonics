@@ -94,10 +94,10 @@ dose_ref2 = father_component.add_ref(dose)
 dose_ref3 = father_component.add_ref(dose)
 
 
-dose_ref.move((10000,10000))
-dose_ref1.move((70000,10000))
-dose_ref2.move((10000,70000))
-dose_ref3.move((70000,70000))
+dose_ref.move((0,10000))
+dose_ref1.move((0, 70000))
+dose_ref2.move((0,120000))
+dose_ref3.move((0,180000))
 
 # father_component.move((1000,1000))
 

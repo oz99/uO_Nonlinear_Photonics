@@ -84,7 +84,7 @@ if __name__ == '__main__':
     parser.add_argument('--wg_width', type=int, default=2000, help='Width of the waveguide')
     parser.add_argument('--wall-width', type=int, default=1000, help='Maximum Width of the waveguide')
     parser.add_argument('--num_wgs', type=int, default=15, help='number of waveguides to be made')
-    parser.add_argument('--length1', type=int, default=50000, help='Length of the waveguide')
+    parser.add_argument('--length1', type=int, default=600000, help='Length of the waveguide')
     parser.add_argument('--layer', type=int, default=(1,0), help='Layer number for the L shape')
 
     parser.add_argument('-NetlistNew', action='store_true', default=True, help='Set True to Activate (default: False)')
