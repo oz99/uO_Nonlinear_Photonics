@@ -1,3 +1,10 @@
+## Note this code was adapted and improved from the original code found in the gdsfactory library.
+## The original code lacked several essential parameters/input tapers needed for adiabatic coupler. 
+# I improved the code to reflect attached articles.
+# and have input tapers into asymmetric s bends., gap between coupling waveguides is now parametrizable. 
+# Lastly, there is an option to have symmetric couplers at after the the asymmetric portion, if this portion is undersired 
+# length3 can be set to 0.  
+
 from __future__ import annotations
 import gdsfactory as gf
 from gdsfactory.component import Component

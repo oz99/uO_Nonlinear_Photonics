@@ -66,14 +66,14 @@ def main(args):
     lower_contour = np.array([x, cs_lower(x)]).T
 
     ## Cross-Sections of Waveguides
-    layer=(1,0)
+    layer= (1,0)
     xs = gf.cross_section.cross_section(width=w0*2, offset=0, layer=layer)
 
     ## Define In/Out Waveguides for S-bend Waveguide
     portsName=['o1','o2','o3']
 
     a = gf.Component(portsName[0])
-    a.add_polygon([(0, str_len, str_len, 0), (-w0, -w0, w0, w0)], layer=layer)
+    a.add_polygon([(0, str_len, str_len, 0), (-w0, -w0, w0, w0)], layer=layer) ## Something here changed in the most current GDSfactory update making this line of code invalid
     a.add_port(name="o1", center=[str_len-str_len, w0-w0], width = w0, orientation=0, layer=layer, port_type='optical')
     a.add_port(name="o2", center=[str_len, w0-w0], width = w0, orientation=180, layer=layer, port_type='optical')
     a.info['width'] = float(w0)
