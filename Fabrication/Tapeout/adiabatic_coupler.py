@@ -104,12 +104,6 @@ def coupler_adiabatic(
     taper_bot.connect("o1", coupler.ports["o1"])
     taper_top.connect("o1", coupler.ports["o2"])
 
-    # taper_bot.connect("o2", top_s_taper.ports["o2"])
-    # taper_top.connect("o2", bot_s_taper.ports["o2"])
-
-    # top_s_taper.connect("o2", taper_top.ports["o1"])
-    # bot_s_taper.connect("o2", taper_bot.ports["o1"])
-
     sbend_left_top = c << bezier(
         control_points=control_points_input_top, cross_section=x_top
     )
@@ -130,13 +124,11 @@ def coupler_adiabatic(
     sbend_right_top.connect("o1", coupler.ports["o3"])
     sbend_right_bot.connect("o1", coupler.ports["o4"], mirror=True)
 
-    c.add_port("o1", port=sbend_left_bot.ports["o1"]) ## Change the port to be the taper going to the s-bend
-    c.add_port("o2", port=sbend_left_top.ports["o1"])
+    c.add_port("o1", port=taper_top.ports["o1"]) ## Change the port to be the taper going to the s-bend
+    c.add_port("o2", port=taper_bot.ports["o1"])
     c.add_port("o3", port=sbend_right_top.ports["o2"])
     c.add_port("o4", port=sbend_right_bot.ports["o2"])
     return c
-
-
 
 if __name__ == "__main__":
     c = coupler_adiabatic()
