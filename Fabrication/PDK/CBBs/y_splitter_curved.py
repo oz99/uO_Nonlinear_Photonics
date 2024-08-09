@@ -73,7 +73,10 @@ def main(args):
     portsName=['o1','o2','o3']
 
     a = gf.Component(portsName[0])
-    a.add_polygon([(0, str_len, str_len, 0), (-w0, -w0, w0, w0)], layer=layer) ## Something here changed in the most current GDSfactory update making this line of code invalid
+   # a.add_polygon([(0, str_len, str_len, 0), (-w0, -w0, w0, w0)], layer=layer) ## Something here changed in the most current GDSfactory update making this line of code invalid
+    a.add_polygon([(0, 0), (str_len, 0), (str_len, str_len), (0, str_len)], layer=layer)
+    a.add_polygon([(-w0, -w0), (w0, -w0), (w0, w0), (-w0, w0)], layer=layer)
+
     a.add_port(name="o1", center=[str_len-str_len, w0-w0], width = w0, orientation=0, layer=layer, port_type='optical')
     a.add_port(name="o2", center=[str_len, w0-w0], width = w0, orientation=180, layer=layer, port_type='optical')
     a.info['width'] = float(w0)
