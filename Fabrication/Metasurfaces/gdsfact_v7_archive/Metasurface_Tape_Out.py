@@ -73,7 +73,7 @@ def align_mark(side):
     return c
 
 
-am = align_mark(500)
+am = align_mark(250)
 
 meta = gf.read.import_gds('c:\\Users\\test\\Proximity_correction_array.gds')
 

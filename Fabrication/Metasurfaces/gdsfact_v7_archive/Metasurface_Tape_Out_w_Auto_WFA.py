@@ -31,25 +31,27 @@ def align_mark_unit():
     # Burn dot in center and conduct WFA in there.
 
     # #Create Write-Field-Alignment Marks at the edge of the reference cross
-    # rect5 = c << gf.components.rectangle(size=(30, 2.5), layer=(61, 0))
-    # rect6 = c << gf.components.rectangle(size=(30, 2.5), layer=(61, 0))
-    # # position write field alignment marks
+    rect5 = c << gf.components.rectangle(size=(30, 2.5), layer=(61, 0))
+    rect6 = c << gf.components.rectangle(size=(30, 2.5), layer=(61, 0))
+    # position write field alignment marks
 
     # ## Align the following two marks so they are in the top right of each alignment mark
-    # rect6.rotate(90).ymax = center.ymax
-    # rect6.move([27,17])
-    # rect5.center = (rect6.xmin, rect6.ymax)
-    # rect5.move((rect6.xmin - rect5.xmax, rect6.ymax - rect5.ymin))
+    rect6.rotate(90).ymax = center.ymax
+    rect6.move([27,17])
+    rect5.center = (rect6.xmin, rect6.ymax)
+    rect5.move((rect6.xmin - rect5.xmax, rect6.ymax - rect5.ymin))
 
 
-    #rect5.center = center.center
-    #rect5.xmax = center.xmax
-    #rect6.center = center.center
+
+
+    # rect5.center = center.center
+    # rect5.xmax = center.xmax
+    # rect6.center = center.center
     # rect6.rotate(90).ymax = center.ymax
 
 
     # L shape structure at the edge
-    L_shape = c << gf.components.L(width=40, size=(200, 200), layer=(2, 0))
+    L_shape = c << gf.components.L(width=40, size=(220, 220), layer=(2, 0))
     L_shape.move([-130, -130])
     return c
 
@@ -65,8 +67,8 @@ def align_mark(side):
     am3.rotate(180).move([side, side])
     am4.mirror_y().movey(0, side)
 
-    # am5 = c << align_mark_unit()
-    # am6 = c << align_mark_unit()
+    am5 = c << align_mark_unit()
+    am6 = c << align_mark_unit()
 
     # am5.move([side, 0])
     # am6.move([0, side])
@@ -75,16 +77,16 @@ def align_mark(side):
 
 am = align_mark(500)
 
-meta = gf.read.import_gds('c:\\Users\\test\\Proximity_correction_array.gds')
+meta = gf.read.import_gds('c:\\UO\\Git_dump\\uO_Nonlinear_Photonics\\Fabrication\\Metasurfaces\\metasurface.gds')
 
-dose_component = gf.Component("dose_component")
+parent_component = gf.Component("parent_layout")
 
-am_ref = dose_component.add_ref(am)
-my_gds_ref = dose_component.add_ref(meta)
+am_ref = parent_component.add_ref(am)
+my_gds_ref = parent_component.add_ref(meta)
 
 # Optionally, position the components
 am_ref.move((0, 0))  # Position of am component, change as needed
 my_gds_ref.move((50, 50)) #my_gds_ref.move((50, 50))  # Position of my_gds component, change as needed
 
-dose_component.show()
+parent_component.show()
 
