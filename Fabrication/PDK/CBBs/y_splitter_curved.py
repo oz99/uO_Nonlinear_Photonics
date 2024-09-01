@@ -30,7 +30,6 @@ def main(args):
 
     L = args.length
     s = args.s
-
     sp_len = L
     str_len = args.straightlength
     len = str_len
@@ -63,7 +62,9 @@ def main(args):
     # Generate points along the waveguide
     x = np.linspace(0, L, 100)
     upper_contour = np.array([x, cs_upper(x)]).T
-    lower_contour = np.array([x, cs_lower(x)]).T
+    lower_contour = np.array([x, cs_lower(x)]).T    
+    lower_contour = np.flip(lower_contour, axis=0)
+    entire_contour = np.concatenate((upper_contour, lower_contour), axis=0)
 
     ## Cross-Sections of Waveguides
     layer= (1,0)
@@ -73,30 +74,21 @@ def main(args):
     portsName=['o1','o2','o3']
 
     a = gf.Component(portsName[0])
-   # a.add_polygon([(0, str_len, str_len, 0), (-w0, -w0, w0, w0)], layer=layer) ## Something here changed in the most current GDSfactory update making this line of code invalid
-    a.add_polygon([(0, 0), (str_len, 0), (str_len, str_len), (0, str_len)], layer=layer)
-    a.add_polygon([(-w0, -w0), (w0, -w0), (w0, w0), (-w0, w0)], layer=layer)
-
-    a.add_port(name="o1", center=[str_len-str_len, w0-w0], width = w0, orientation=0, layer=layer, port_type='optical')
-    a.add_port(name="o2", center=[str_len, w0-w0], width = w0, orientation=180, layer=layer, port_type='optical')
-    a.info['width'] = float(w0)
-    a.info['length'] = float(str_len)
+    a.add_polygon([(str_len+len+sp_len+rad+rad, -w0), (str_len+len+sp_len+rad+rad, w0), (str_len+len+sp_len+rad+rad+str_len, w0), (str_len+len+sp_len+rad+rad+str_len, -w0)], layer=layer)
+    a.add_port(name="o1", center=[(rad+rad+L), 0], width = w0, orientation=0, layer=layer, port_type='optical')
+    a.add_port(name="o2", center=[(2*len+rad+rad+L), 0], width = w0, orientation=180, layer=layer, port_type='optical')
     wg_in = c << a 
 
     b = gf.Component(portsName[1])
-    b.add_polygon([(str_len+len+sp_len+rad+rad, str_len+len+sp_len+rad+rad+str_len, str_len+len+sp_len+rad+rad+str_len, str_len+len+sp_len+rad+rad), (-w0, -w0, w0, w0)], layer=layer)
-    b.add_port(name="o1", center=[str_len+len+sp_len+rad+rad, 0], width = w0/2, orientation=180, layer=layer, port_type='optical')
-    b.add_port(name="o2", center=[str_len+len+sp_len+rad+rad+str_len, 0], width = w0/2, orientation=0, layer=layer, port_type='optical')
-    b.info['width'] = float(w0)
-    b.info['length'] = float(str_len)
+    b.add_polygon([(str_len+len+sp_len+rad+rad, -w0), (str_len+len+sp_len+rad+rad, w0), (str_len+len+sp_len+rad+rad+str_len, w0), (str_len+len+sp_len+rad+rad+str_len, -w0)], layer=layer)
+    b.add_port(name="o1", center=[2*len+sp_len+rad+rad, 0], width = w0*2, orientation=180, layer=layer, port_type='optical')
+    b.add_port(name="o2", center=[2*len+sp_len+rad+rad+str_len, 0], width = w0*2, orientation=0, layer=layer, port_type='optical')
     wg_out1 = c << b
 
     d = gf.Component(portsName[2])
-    d.add_polygon([(str_len+len+sp_len+rad+rad, str_len+len+sp_len+rad+rad+str_len, str_len+len+sp_len+rad+rad+str_len, str_len+len+sp_len+rad+rad), (-w0, -w0, w0, w0)], layer=layer)
-    d.add_port(name="o1", center=[str_len+len+sp_len+rad+rad, 0], width = w0/2, orientation=180, layer=layer, port_type='optical')
-    d.add_port(name="o2", center=[str_len+len+sp_len+rad+rad+str_len, 0], width = w0/2, orientation=0, layer=layer, port_type='optical')
-    d.info['width'] = float(w0)
-    d.info['length'] = float(str_len)
+    d.add_polygon([(str_len+len+sp_len+rad+rad, -w0), (str_len+len+sp_len+rad+rad, w0), (str_len+len+sp_len+rad+rad+str_len, w0), (str_len+len+sp_len+rad+rad+str_len, -w0)], layer=layer)
+    d.add_port(name="o1", center=[2*len+sp_len+rad+rad, 0], width = w0*2, orientation=180, layer=layer, port_type='optical')
+    d.add_port(name="o2", center=[2*len+sp_len+rad+rad+str_len, 0], width = w0*2, orientation=0, layer=layer, port_type='optical')
     wg_out2 = c << d
 
     ## Define the Y-Splitter Componenent
@@ -104,20 +96,17 @@ def main(args):
 
     # Straight Input Waveguide
     f = gf.Component("StraightWG")
-    f.add_polygon([(str_len, str_len+len, str_len+len, str_len), (-(w0), -(w0), (w0), (w0))], layer=layer)
-    f.add_port(name="o1", center=[str_len, 0], width = w5, orientation=0, layer=layer, port_type='optical')
-    f.add_port(name="o2", center=[str_len+len, 0], width = w5, orientation=180, layer=layer, port_type='optical')
-    f.info['width'] = float(w5)
-    f.info['length'] = float(str_len)
+    f.add_polygon([(str_len,-w0), (str_len+len, -w0), (str_len+len, w0), (str_len, w0)], layer=layer)
+    f.add_port(name="o1", center=[0, 0], width = w0, orientation=0, layer=layer, port_type='optical')
+    f.add_port(name="o2", center=[2*len, 0], width = w0, orientation=180, layer=layer, port_type='optical')
     wg_str = splitter << f
-    wg_str.connect("o1", wg_in.ports["o2"])
 
     ## Curved Y-Splitter
     e = gf.Component("polygon")
-    e.add_polygon([*upper_contour, *reversed(lower_contour)], layer=layer)
+    e.add_polygon([*entire_contour], layer=layer)
     e.add_port(name="o1", center=[0, w0-w0], width = w0, orientation=0, layer=layer, port_type='optical')
-    e.add_port(name="o2", center=[L, (s/2+w0)], width = w0, orientation=0, layer=layer, port_type='optical')
-    e.add_port(name="o3", center=[L, -(s/2+w0)], width = w0, orientation=0, layer=layer, port_type='optical')
+    e.add_port(name="o2", center=[L, (s/2+w0)], width = w0*2, orientation=0, layer=layer, port_type='optical')
+    e.add_port(name="o3", center=[L, -(s/2+w0)], width = w0*2, orientation=0, layer=layer, port_type='optical')
     sp = splitter << e
     sp.connect("o1", wg_str.ports["o2"])
 
@@ -125,36 +114,28 @@ def main(args):
     p1 = gf.path.euler(radius=rad, angle=45, p=0.5, use_eff=False)
     p2 = gf.path.euler(radius=rad, angle=-45, p=0.5, use_eff=False)
     p_top = p1 + p2
-    total_p_top = p_top.extrude(xs)
+    total_p_top = gf.path.extrude(p_top, layer=layer, width=w0*2)
     sbend_top = splitter << total_p_top
-    sbend_top.info['width'] = float(w5)
-    sbend_top.info['radius'] = float(rad)
     sbend_top.connect("o1", sp.ports["o2"])
 
     p3 = gf.path.euler(radius=rad, angle=-45, p=0.5, use_eff=False)
     p4 = gf.path.euler(radius=rad, angle=45, p=0.5, use_eff=False)
     p_bot = p3 + p4
-    total_p_bot = p_bot.extrude(xs)
+    total_p_bot = gf.path.extrude(p_bot, layer=layer, width=w0*2)
     sbend_bot = splitter << total_p_bot
-    sbend_bot.info['width'] = float(w0)
-    sbend_bot.info['radius'] = float(rad)
     sbend_bot.connect("o1", sp.ports["o3"])
 
+
+    #connect the input of the output waveguides to the output of the s-bends    
+    wg_in.connect("o2", wg_str.ports["o1"])
     wg_out1.connect("o1", sbend_top.ports["o2"])
     wg_out2.connect("o1", sbend_bot.ports["o2"])
 
+    #add the ports to the entire device
     splitter.add_port(name="o1", center=[str_len, 0], width = w0, orientation=0, layer=layer, port_type='optical')
-    splitter.add_port(name="o2", center=[str_len+len+sp_len+rad+rad, s/2+2*rad+w0/2], width = w0, orientation=0, layer=layer, port_type='optical')
-    splitter.add_port(name="o3", center=[str_len+len+sp_len+rad+rad, -(s/2+2*rad+w0/2)], width = w0, orientation=0, layer=layer, port_type='optical')
+    splitter.add_port(name="o2", center=[str_len+len+sp_len+rad+rad, s/2+2*rad+w0/2], width = w0*2, orientation=0, layer=layer, port_type='optical')
+    splitter.add_port(name="o3", center=[str_len+len+sp_len+rad+rad, -(s/2+2*rad+w0/2)], width = w0*2, orientation=0, layer=layer, port_type='optical')
     x = c << splitter
-
-    x.connect("o1", wg_in.ports["o2"])
-    
-    #x.connect("o2", wg_out1.ports["o1"])
-    #x.connect("o3", wg_out2.ports["o1"])
-
-    x.info['width'] = float(w0)
-    x.info['radius'] = float(rad)
 
     c.add_port(portsName[0], port=wg_in.ports["o1"])
     c.add_port(portsName[1], port=wg_out1.ports["o2"])
@@ -165,20 +146,10 @@ def main(args):
 
     c.show()
 
-    ## Extract and Save Netlist [Connections, Instances, Placements, Ports, Name]
-    elems_yaml = c.get_netlist_yaml()
-
-    #not enough elements included in output netlist
-    #f = open("Netlist_Y-Splitter_test.yml", "w0")
-    # f.write(elems_yaml)
-    #f.close()
-
-
-
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--length', type=float, default=2, help='Length of the y-spliter')
-    parser.add_argument('--w0', type=float, default=0.59, help='Width at point 0, and for the In/Out Waveguides')
+    parser.add_argument('--w0', type=float, default=0.6, help='Width at point 0, and for the In/Out Waveguides')
     parser.add_argument('--w1', type=float, default=1.2, help='Width at point 1')
     parser.add_argument('--w2', type=float, default=1.8, help='Width at point 2')
     parser.add_argument('--w3', type=float, default=1.7, help='Width at point 3')
@@ -187,8 +158,10 @@ if __name__ == '__main__':
     parser.add_argument('--s', type=float, default=0.2, help='Width of the split between the output splitter arms')
     ### Important - Ensure to confirm that w5 and s are optimized to minimize material outside of the s-bend (i.e. there is only a material gap in the middle)
 
+
+    ## Add length of the y-splitter arms
     parser.add_argument('-straightlength', type=float, default=2, help='Length of the Straight In/Out Waveguides (default: 5 um)')
-    parser.add_argument('-radius', type=float, default=2, help='Radius of the Bend Section (default: 2 um)')
+    parser.add_argument('-radius', type=float, default=10, help='Radius of the Bend Section (default: 2 um)')
 
     parser.add_argument('-NetlistNew', action='store_true', default=True, help='Set True to Activate (default: False)')
     args = parser.parse_args()
