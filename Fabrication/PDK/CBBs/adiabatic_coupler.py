@@ -1,4 +1,6 @@
-## Note this code was adapted and improved from the original code found in the gdsfactory library.
+# Author: Ozan W. Oner
+# email: ooner083@uottawa.ca 
+# Note this code was adapted and improved from the original code found in the gdsfactory library.
 ## The original code lacked several essential parameters/input tapers needed for adiabatic coupler. 
 # I improved the code to reflect attached articles.
 # and have input tapers into asymmetric s bends., gap between coupling waveguides is now parametrizable. 
@@ -31,7 +33,7 @@ def coupler_adiabatic(
     - https://doi.org/10.1364/CLEO_SI.2017.SF1I.5
     - https://doi.org/10.1364/CLEO_SI.2018.STh4B.4
 
-    input Bezier curves, with poles set to half of the x-length of the S-bend.
+    This component consists of 5 regions. 
     1. is the first half of input S-bend where input widths taper by +dw and -dw
     2. is the second half of the S-bend straight with constant, unbalanced widths
     3. is the region where the two asymmetric straights gradually come together
