@@ -23,7 +23,6 @@ import re
 from scipy.interpolate import CubicSpline
 import json   
 
-
 def main(args):
     c = gf.Component("YSplitter")
 
@@ -142,9 +141,10 @@ def main(args):
     c.add_port(portsName[2], port=wg_out2.ports["o2"])
 
     # Write Final GDS
-    c.write_gds("Ysplitter_test.gds", with_metadata=True)
+    c.write_gds("Ysplitter_test.gds")
 
     c.show()
+    return c
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -157,7 +157,6 @@ if __name__ == '__main__':
     parser.add_argument('--w5', type=float, default=1.4, help='Width at point 5')
     parser.add_argument('--s', type=float, default=0.2, help='Width of the split between the output splitter arms')
     ### Important - Ensure to confirm that w5 and s are optimized to minimize material outside of the s-bend (i.e. there is only a material gap in the middle)
-
 
     ## Add length of the y-splitter arms
     parser.add_argument('-straightlength', type=float, default=2, help='Length of the Straight In/Out Waveguides (default: 5 um)')
