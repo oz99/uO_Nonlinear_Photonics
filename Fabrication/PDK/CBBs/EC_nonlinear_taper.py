@@ -1,142 +1,91 @@
-## Note this code was adapted and improved from the original code found in the gdsfactory library.
-## The original code lacked several essential parameters/input tapers needed for adiabatic coupler. 
-# I improved the code to reflect attached articles.
-# and have input tapers into asymmetric s bends., gap between coupling waveguides is now parametrizable. 
-# Lastly, there is an option to have symmetric couplers at after the the asymmetric portion, if this portion is undersired 
-# length3 can be set to 0.  
+# Author: Ozan W. Oner
+# email : ooner083@uottawa.ca
+# 
+# Title: Edge Coupler (EC) Nonlinear Taper
+# Description: This script generates a smooth curved y-branch splitter with ports using gdsfactory and CubicSpline interpolation. Note that this device is intended for photonic applications.
+#               In the field of sillicon photonics, namely sillicon-on-insulator (SOI), smooth splitter designs  
+#               have prooven to have the highest efficiencies amongst splitter designs. Our goal is to generate GDSII 
+#               files from this script in in which we can then simulate and optimize geometries using either meep or lumerical. 
+#               You may ask why not just use lumerical's built in waveguide generator? The answer is twofold.
+#               1. We want to be able to optimize the geometry using python scripts.
+#               2. We want to easily Tape-Out. Tape-Out is the process of sending your design to a foundry to be fabricated.
+#                   In our case, at the University of uOttawa, we will be using our in-house e-beam for lithography.
+#               
+#               To further understand the physics of this device. Please reference the following:
+#               1. Optimized low-loss integrated photonics silicon-nitride Y-branch splitter: https://pubs.aip.org/aip/acp/article/1002090
+#               2. MIT Photonic Games Y-splitter: https://s3.amazonaws.com/fip-4/Combiner/index.html
+# Please note that all parameters are in microns. They are listed at the bottom of this code. Ensure that KLayout is open and that you have KLive plugin installed.
 
-from __future__ import annotations
 import gdsfactory as gf
-from gdsfactory.component import Component
-from gdsfactory.components.bezier import bezier
-from gdsfactory.typings import CrossSectionSpec
+import numpy as np
+import argparse
+import re
+from scipy.interpolate import CubicSpline
+import json   
 
-@gf.cell
-def coupler_adiabatic(
-    input_taper: float = 10.0,
-    length1: float = 20.0,
-    length2: float = 70.0,
-    length3: float = 0.0,
-    length4: float = 10.0,
-    gap: float = 0.1,
-    input_wg_sep: float = 3.0,
-    output_wg_sep: float = 2.0,
-    dw: float = 0.05,
-    cross_section: CrossSectionSpec = "strip",
-) -> Component:
-    """Returns 50/50 adiabatic coupler.
+def main(args):
+    c = gf.Component("EC_nonlinear_taper")
 
-    Design based on asymmetric adiabatic 3dB coupler designs, such as those.
-    - https://doi.org/10.1364/CLEO.2010.CThAA2,
-    - https://doi.org/10.1364/CLEO_SI.2017.SF1I.5
-    - https://doi.org/10.1364/CLEO_SI.2018.STh4B.4
+    L = args.length
+    sp_len = L
+    device_name = 'EC_nonlinear_taper_Ozan'
 
-    input Bezier curves, with poles set to half of the x-length of the S-bend.
-    1. is the first half of input S-bend where input widths taper by +dw and -dw
-    2. is the second half of the S-bend straight with constant, unbalanced widths
-    3. is the region where the two asymmetric straights gradually come together
-    4. straights taper back to the original width at a fixed distance from one another
-    5. is the output S-bend straight.
+    ## Please note we divide by 2 since the cubic spline function used to define the countour goes from origin to w and not from -w to w.
+    w0 = args.w0/2
+    w1 = args.w1/2
+    w2 = args.w2/2
+    w3 = args.w3/2
+    w4 = args.w4/2
+    w5 = args.w5/2
+ 
+    # It is possible to add breakpoints of widths to achieve a specific structure.
+    widths = [w0, w1, w2, w3, w4, w5]
 
-    Args:
-        length1: region that gradually brings the two asymmetric straights together.
-            In this region the straight widths gradually change to be different by `dw`.
-        length2: coupling region, where asymmetric straights gradually
-            become the same width.
-        length3: coupling region, where the two straights are identical (can be 0)
-        length4: output region where the two straights separate.
-        wg_sep: Distance between center-to-center in the coupling region (Region 2).
-        input_wg_sep: Separation of the two straights at the input, center-to-center.
-        output_wg_sep: Separation of the two straights at the output, center-to-center.
-        dw: Change in straight width.
-            In Region 1, top arm tapers to width+dw/2.0, bottom taper to width-dw/2.0.
-        cross_section: cross_section spec.
-
-    """
-
+    breakpoints = np.linspace(0, L, 6)
     
-    # Control points for input and output S-bends
-    control_points_input_top = (
-        (0, 0),
-        (length1 / 2.0, 0),
-        (length1 / 2.0, -input_wg_sep / 2.0),
-        (length1, -input_wg_sep / 2.0),
-    )
+    # Heights for the upper and lower halves
+    heights_upper = [w0, w1, w2, w3, w4, w5]
+    heights_lower = [-w for w in heights_upper]
 
-    control_points_input_bottom = (
-        (0, -input_wg_sep),
-        (length1 / 2.0, -input_wg_sep),
-        (length1 / 2.0, -input_wg_sep / 2.0),
-        (length1, -input_wg_sep / 2.0),
-    )
+    # Cubic Spline interpolation for the upper and lower contours
+    cs_upper = CubicSpline(breakpoints, heights_upper)
+    cs_lower = CubicSpline(breakpoints, heights_lower)
 
-    control_points_output_top = (
-        (length1 + length2 + length3, -input_wg_sep / 2.0 ),
-        (
-            length1 + length2 + length3 + length4 / 2.0,
-            -input_wg_sep / 2.0),
-        (
-            length1 + length2 + length3 + length4/ 2.0,
-            -input_wg_sep / 2.0 + output_wg_sep / 2.0),
-        (
-            length1 + length2 + length3 + length4,
-            -input_wg_sep / 2.0 + output_wg_sep / 2.0)
-    )
+    # Generate points along the waveguide
+    x = np.linspace(0, L, 100)
+    upper_contour = np.array([x, cs_upper(x)]).T
+    lower_contour = np.array([x, cs_lower(x)]).T    
+    lower_contour = np.flip(lower_contour, axis=0)
+    entire_contour = np.concatenate((upper_contour, lower_contour), axis=0)
 
-    c = Component()
+    ## Cross-Sections of Waveguides
+    layer= (1,0)
+    xs = gf.cross_section.cross_section(width=w0*2, offset=0, layer=layer)
 
-    x = gf.get_cross_section(cross_section)
-    width = float(x.width)
-    width_top = width + dw
-    width_bot = width - dw
-    x_top = x.copy(width=width_top)
-    x_bot = x.copy(width=width_bot)
+    ## Define the Y-Splitter Componenent
+    splitter = gf.Component("splitter")
+    ## EC_nonlinear_taper
+    e = gf.Component("polygon")
+    e.add_polygon([*entire_contour], layer=layer)
+    e.add_port(name="o1", center=[0, 0], width = w0, orientation=0, layer=layer, port_type='optical')
+    e.add_port(name="o2", center=[L, 0], width = w5, orientation=0, layer=layer, port_type='optical')
+    sp = c << e
 
-    coupler = c << gf.components.coupler_straight(length=length3, cross_section=x, gap=gap)
-
-    taper_top = c << gf.components.taper(
-        width1=width, width2=width_top,length = length2, cross_section=cross_section
-    )
-    taper_bot = c << gf.components.taper(
-        width1=width, width2=width_bot, length = length2, cross_section=cross_section
-    )
-
-    top_s_taper = c << gf.components.taper(
-        width1=width, width2=width_top,length = input_taper, cross_section=cross_section
-    ) 
-    bot_s_taper = c << gf.components.taper(
-        width1=width, width2=width_bot,length = input_taper, cross_section=cross_section
-    )
-
-    taper_bot.connect("o1", coupler.ports["o1"])
-    taper_top.connect("o1", coupler.ports["o2"])
-
-    sbend_left_top = c << bezier(
-        control_points=control_points_input_top, cross_section=x_top
-    )
-    sbend_left_bot = c << bezier(
-        control_points=control_points_input_bottom, cross_section=x_bot
-    )
-    
-    sbend_left_top.connect("o2", taper_top.ports["o2"])
-    sbend_left_bot.connect("o2", taper_bot.ports["o2"])
-
-    top_s_taper.connect("o2", sbend_left_top.ports["o1"])
-    bot_s_taper.connect("o2", sbend_left_bot.ports["o1"])
-
-    sbend_right = bezier(control_points=control_points_output_top, cross_section=x)
-    sbend_right_top = c << sbend_right
-    sbend_right_bot = c << sbend_right
-
-    sbend_right_top.connect("o1", coupler.ports["o3"])
-    sbend_right_bot.connect("o1", coupler.ports["o4"], mirror=True)
-
-    c.add_port("o1", port=taper_top.ports["o1"]) ## Change the port to be the taper going to the s-bend
-    c.add_port("o2", port=taper_bot.ports["o1"])
-    c.add_port("o3", port=sbend_right_top.ports["o2"])
-    c.add_port("o4", port=sbend_right_bot.ports["o2"])
+    # Write Final GDS
+    c.write_gds("EC_Nonlinear_Taper.gds")
+    c.show()
     return c
 
-if __name__ == "__main__":
-    c = coupler_adiabatic()
-    c.show()
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--length', type=float, default=2, help='Length of the y-spliter')
+    parser.add_argument('--w0', type=float, default=0.2, help='Width at point 0, and for the In/Out Waveguides')
+    parser.add_argument('--w1', type=float, default=0.3, help='Width at point 1')
+    parser.add_argument('--w2', type=float, default=0.35, help='Width at point 2')
+    parser.add_argument('--w3', type=float, default=0.4, help='Width at point 3')
+    parser.add_argument('--w4', type=float, default=1.0, help='Width at point 4')
+    parser.add_argument('--w5', type=float, default=2.1, help='Width at point 5')
+
+    parser.add_argument('-NetlistNew', action='store_true', default=True, help='Set True to Activate (default: False)')
+    args = parser.parse_args()
+    main(args)
