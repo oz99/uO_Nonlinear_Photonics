@@ -78,12 +78,12 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--length', type=float, default=2, help='Length of the y-spliter')
+    parser.add_argument('--length', type=float, default=30, help='Length of the y-spliter')
     parser.add_argument('--w0', type=float, default=0.2, help='Width at point 0, and for the In/Out Waveguides')
     parser.add_argument('--w1', type=float, default=0.3, help='Width at point 1')
     parser.add_argument('--w2', type=float, default=0.35, help='Width at point 2')
     parser.add_argument('--w3', type=float, default=0.4, help='Width at point 3')
-    parser.add_argument('--w4', type=float, default=1.0, help='Width at point 4')
+    parser.add_argument('--w4', type=float, default=0.5, help='Width at point 4')
     parser.add_argument('--w5', type=float, default=2.1, help='Width at point 5')
 
     parser.add_argument('-NetlistNew', action='store_true', default=True, help='Set True to Activate (default: False)')
