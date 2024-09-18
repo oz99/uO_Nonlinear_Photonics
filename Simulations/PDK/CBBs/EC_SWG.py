@@ -11,39 +11,42 @@ import subprocess
 h = 200e-9 # height of the structure
 
 ## Note that the following variables go into the GDS structure and are in um
-length = 5 # Length of the y-spliter
-w0 = 0.6 # Width at point 0, and for the In/Out Waveguides
-w1 = 1.2 # Width at point 1
-w2 = 2.4 # Width at point 2
-w3 = 4 # Width at point 3
-w4 = 3 # Width at point 4
-s = 0.2 #'Width of the split between the output splitter arms
-#w5 = '(2*w0)+s' # Width at point 5 
-w5 = 1.4
-straightlength = 2 # Length of the Straight In/Out Waveguides (default: 5 um)
-radius = 10 # Radius of the Bend Section (default: 2 um)
+## Note that the following variables go into the GDS structure and are in um
+min_feature_size = 0.04 # Minimum feature size, generally 40nm for our e-beam
+num_gratings = 110 # Number of grating elements
 
-### Do I add a substrate?
+initial_period = 0.4 # Initial period of the grating (e.g., 700 nm)
+final_period = 0.267 # Final period of the grating (e.g., 300 nm)
+initial_width = 0.2 # Initial width of the grating element (e.g., 350 nm)
+final_width = 0.17 # Final width of the grating element (e.g., 150 nm)
+initial_duty_cycle = 0.5 # Initial duty cycle (50% of the period)
+final_duty_cycle = 0.6 # Final duty cycle (80% of the period)
+tapering_length = 35 # Length over which tapering occurs (e.g., 10 microns)
+initial_y_span = 0.2 # Initial height of the grating element (e.g., 450 nm)
+final_y_span = 0.45 # Final height of the grating element (e.g., 250 nm)
 
+### Do I add a NetlistNew option?
 
-WL_Start = 1500e-9
-WL_Stop = 1600e-9
+NetlistNew = True # Set True to Activate (default: False)
 
 # Define the Python file you want to run and the arguments to pass
 
-file_to_run = 'C:\\Git_Dump\\uO_Nonlinear_Photonics\\Fabrication\\PDK\\CBBs\\y_splitter_curved.py'
+file_to_run = 'C:\\Git_Dump\\uO_Nonlinear_Photonics\\Fabrication\\PDK\\CBBs\\EC_SWG.py'
 arguments = [
-    '--length', str(length),  # Replace with your desired length value
-    '--w0', str(w0),   # Replace with your desired width value
-    '--w1', str(w1),    # Replace with your desired height value
-    '--w2', str(w2),    # Replace with your desired height value
-    '--w3', str(w3),    # Replace with your desired height value
-    '--w4', str(w4),   # Replace with your desired height value
-    '--w5', str(w5),    # Replace with your desired height value
-    '--s', str(s),    # Replace with your desired height value
-    '--straightlength', str(straightlength),    # Replace with your desired height value
-    '--radius', str(radius),   # Replace with your desired height value
+    '--min_feature_size', str(min_feature_size),  # Replace with your desired value
+    '--num_gratings', str(num_gratings),  # Replace with your desired value
+    '--initial_period', str(initial_period),  # Replace with your desired value
+    '--final_period', str(final_period),  # Replace with your desired value
+    '--initial_width', str(initial_width),  # Replace with your desired value
+    '--final_width', str(final_width),  # Replace with your desired value
+    '--initial_duty_cycle', str(initial_duty_cycle),  # Replace with your desired value
+    '--final_duty_cycle', str(final_duty_cycle),  # Replace with your desired value
+    '--tapering_length', str(tapering_length),  # Replace with your desired value
+    '--initial_y_span', str(initial_y_span),  # Replace with your desired value
+    '--final_y_span', str(final_y_span),  # Replace with your desired value
+    '--NetlistNew', str(NetlistNew),  # Replace with your desired value
 ]
+
 
 # Run the Python file with arguments
 subprocess.run(['python', file_to_run] + arguments)
@@ -104,7 +107,7 @@ fdtd.setglobalsource("wavelength stop",WL_Stop)
 
 fdtd.addport() # add port
 fdtd.set("name", "Input_port")
-fdtd.set("x", straightlength*10**-6)  # Set port position
+fdtd.set("x", 0)  # Set port position
 fdtd.set("y", 0)
 fdtd.set("y span", 5e-6)
 fdtd.set("z", h/2)
@@ -114,23 +117,14 @@ fdtd.set("mode selection", "fundamental TE mode")
 
 fdtd.addport() # add port
 fdtd.set("name", "Output_port_top")
-fdtd.set("x", (length+straightlength*2+0.5)*10**-6)  # Set port position
-fdtd.set("y", ((w0+s)/2)*10**-6)
-fdtd.set("y span", w0*10**-6)
+#fdtd.set("x", tapering_length + )  # need to fix according to geometry structure
+fdtd.set("y", 0)
+fdtd.set("y span", 5e-6)
 fdtd.set("z", h/2)
 fdtd.set("z span", 4e-6)
 fdtd.set("direction", "forward")  # Direction of the input
 
-fdtd.addport() # add port
-fdtd.set("name", "Output_port_bottom")
-fdtd.set("x", (length+straightlength*2+0.5)*10**-6)  # Set port position
-fdtd.set("y", -((w0+s)/2)*10**-6)
-fdtd.set("y span", w0*10**-6)
-fdtd.set("z", h/2)
-fdtd.set("z span", 4e-6)
-fdtd.set("direction", "forward")  # Direction of the input
-
-fdtd.save("Ysplitter.fsp")
+fdtd.save("EC_SWG.fsp")
 
 fdtd.run()
 

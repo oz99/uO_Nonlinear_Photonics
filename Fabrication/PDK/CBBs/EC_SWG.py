@@ -16,6 +16,7 @@ def main(args):
 
     min_feature_size = args.min_feature_size
     num_gratings = args.num_gratings
+    output_WG_length = args.output_WG_length
     initial_period = args.initial_period
     final_period = args.final_period
     initial_width = args.initial_width
@@ -40,7 +41,7 @@ def main(args):
 
         # Calculate the taper ratio based on the manual tapering length
 
-        taper_ratio = xpos / tapering_length;  # Ratio within the tapering length
+        #taper_ratio = xpos / tapering_length;  # Ratio within the tapering length
 
         # Calculate the taper ratio based on the position
         taper_ratio = i / (num_gratings-1)
@@ -84,7 +85,7 @@ def main(args):
        # a.add_polygon([(xpos + current_width / 2, current_y_span), (-xpos - current_width / 2, current_y_span), (xpos + current_width / 2, -current_y_span), -(xpos + current_width / 2, current_y_span)],Layer=layer)
         grating  = c << a
     a.add_port(name="o1", center=[-initial_width / 2, 0], width = initial_width, orientation=180, layer=layer, port_type='optical')
-
+    print(taper_ratio)
         #####################################################################
         # Linear taper
 
@@ -104,16 +105,18 @@ def main(args):
     # ##############################################################
     # # Straight output waveguide 
     # ##############################################################
+    grating_span = num_gratings*(initial_period)
 
     d = gf.Component("output_WG")    
     # d.add_polygon([( grating_span + current_width/2, final_y_span),(grating_span + current_width / 2, -final_y_span),
     #                 (grating_span - current_width / 2, -final_y_span),
     #                 (grating_span - current_width / 2, final_y_span)],layer=layer)
     
-    d.add_polygon([( grating_span + current_width/2, final_y_span),
-                (grating_span + current_width / 2, -final_y_span),
+    d.add_polygon([(output_WG_length + xpos + current_width/2, final_y_span),
+                (output_WG_length + xpos + current_width/2, -final_y_span),
                 (xpos  + current_width/2 , -final_y_span),
                 (xpos  + current_width/2, final_y_span)], layer=layer)
+    
     d.add_port(name="o2", center=[grating_span + current_width/2, 0], width = final_y_span, orientation=0, layer=layer, port_type='optical')
     WG  = c << d
     
@@ -130,6 +133,8 @@ if __name__ == '__main__':
     
     parser.add_argument('--min_feature_size', type=int, default=0.04, help='Minimum feature size, generally 40nm for our e-beam')
     parser.add_argument('--num_gratings', type=int, default=110, help='Number of grating elements')
+
+    parser.add_argument('--output_WG_length', type=int, default=10, help='length of straight output WG')
 
     parser.add_argument('--initial_period', type=float, default=0.4, help='Initial period of the grating (e.g., 700 nm)')
     parser.add_argument('--final_period', type=float, default=0.267, help='Final period of the grating (e.g., 300 nm)')
