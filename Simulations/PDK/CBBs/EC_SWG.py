@@ -1,147 +1,232 @@
-### This file generates a gdsfactory script of a subwavelength grating (SWG) edge coupler
-### This work was inspired by the following publications 
-
-### Authors: Ozan W. Oner and Garen Simpson
-#### 
-
-
-
-import gdsfactory as gf
-import numpy as np
-import argparse
-import re
-from scipy.interpolate import CubicSpline
-import json   
-
-def main(args):
-    c = gf.Component("SWG_Edge_Coupler")
-
-    min_feature_size = args.min_feature_size
-    num_gratings = args.num_gratings
-    initial_period = args.initial_period
-    final_period = args.final_period
-    initial_width = args.initial_width
-    final_width = args.final_width
-    initial_duty_cycle = args.initial_duty_cycle
-    final_duty_cycle = args.final_duty_cycle
-    tapering_length = args.tapering_length
-    initial_y_span = args.initial_y_span
-    final_y_span = args.final_y_span
-    device_name = 'SWG_Edge_Coupler'
-
-    layer= (1,0)
-    counter = 0
-    #portsName = [counter]
-    portsName=['o1','o2']
-
-    # Assuming num_gratings is already defined as a variable
-    for i in range(int(num_gratings - (num_gratings * 0.1))):
+import numpy as np 
+import os
+import sys
+import importlib.machinery
+import importlib.util
+import subprocess
 
 
-        xpos = i * initial_period   # Positioning each grating element based on the initial period
+######### Setup geometry paramters
 
-        # Calculate the taper ratio based on the manual tapering length
+h = 200e-9 # height of the structure
 
-        taper_ratio = xpos / tapering_length;  # Ratio within the tapering length
+## Note that the following variables go into the GDS structure and are in um
+length = 5 # Length of the y-spliter
+w0 = 0.6 # Width at point 0, and for the In/Out Waveguides
+w1 = 1.2 # Width at point 1
+w2 = 2.4 # Width at point 2
+w3 = 4 # Width at point 3
+w4 = 3 # Width at point 4
+s = 0.2 #'Width of the split between the output splitter arms
+#w5 = '(2*w0)+s' # Width at point 5 
+w5 = 1.4
+straightlength = 2 # Length of the Straight In/Out Waveguides (default: 5 um)
+radius = 10 # Radius of the Bend Section (default: 2 um)
 
-        # Calculate the taper ratio based on the position
-        taper_ratio = i / (num_gratings-1)
-        
-        # Taper the period
-        current_period = initial_period * (1 - taper_ratio) + final_period * taper_ratio
-        
-        # Taper the duty cycle
-        current_duty_cycle = initial_duty_cycle * (1 - taper_ratio) + final_duty_cycle * taper_ratio
-        
-        # Calculate the width of the current grating element
-        current_width = current_duty_cycle * current_period
-
-        # Taper the grating width independently of the duty cycle
-        actual_width = initial_width * (1 - taper_ratio) + final_width * taper_ratio
-        
-        # Taper the y span (height)
-        current_y_span = initial_y_span * (1 - taper_ratio) + final_y_span * taper_ratio
-    
-        # Calculate the gap between this segment and the next
-        current_gap = current_period - current_width
-        
-        
-        print([i])        
-        portsName.append(counter)
-
-        name = counter
-        
-        
-        # a = gf.Component(portsName[0])
-        # a.add_polygon([(xpos + current_width / 2, current_y_span), (-xpos - current_width / 2, current_y_span),
-        #                 (xpos + current_width / 2, -current_y_span), -(xpos + current_width / 2, current_y_span)],Layer=layer)
-        
-        # add references
-        a = gf.Component()    
-        a.add_polygon([(xpos - current_width / 2, current_y_span), (xpos - current_width / 2, -current_y_span),
-                        (xpos + current_width / 2, -current_y_span), (xpos + current_width / 2, current_y_span)],layer=layer)
-    #    ref = SWG_Edge_Coupler.addref(a)
-        counter += 1
-        
-       # a.add_polygon([(xpos + current_width / 2, current_y_span), (-xpos - current_width / 2, current_y_span), (xpos + current_width / 2, -current_y_span), -(xpos + current_width / 2, current_y_span)],Layer=layer)
-        grating  = c << a
-    a.add_port(name="o1", center=[-initial_width / 2, 0], width = initial_width, orientation=180, layer=layer, port_type='optical')
-
-        #####################################################################
-        # Linear taper
-
-        #####################################################################
-
-    b = gf.Component("WG_taper")  
-    # b.add_polygon([( -tapering_length + xpos  + current_width/2, -min_feature_size),
-    #             (-tapering_length + xpos  + current_width/2, min_feature_size),
-    #             (xpos  + current_width/2 , final_y_span),
-    #             (xpos  + current_width/2, -final_y_span)], layer=layer)
-    b.add_polygon([(initial_width/2, -min_feature_size),
-            (initial_width/2, min_feature_size),
-            (xpos  + current_width/2 , final_y_span),
-            (xpos  + current_width/2, -final_y_span)], layer=layer)
-    WG  = c << b
-
-    # ##############################################################
-    # # Straight output waveguide 
-    # ##############################################################
-
-    d = gf.Component("output_WG")    
-    # d.add_polygon([( grating_span + current_width/2, final_y_span),(grating_span + current_width / 2, -final_y_span),
-    #                 (grating_span - current_width / 2, -final_y_span),
-    #                 (grating_span - current_width / 2, final_y_span)],layer=layer)
-    
-    d.add_polygon([( grating_span + current_width/2, final_y_span),
-                (grating_span + current_width / 2, -final_y_span),
-                (xpos  + current_width/2 , -final_y_span),
-                (xpos  + current_width/2, final_y_span)], layer=layer)
-    d.add_port(name="o2", center=[grating_span + current_width/2, 0], width = final_y_span, orientation=0, layer=layer, port_type='optical')
-    WG  = c << d
-    
-    c.add_port(portsName[0], port=a.ports["o1"])
-    c.add_port(portsName[1], port=d.ports["o2"])
-
-    c.write_gds("Ysplitter_test.gds")
-    c.show()
-    return c
+### Do I add a substrate?
 
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    
-    parser.add_argument('--min_feature_size', type=int, default=0.04, help='Minimum feature size, generally 40nm for our e-beam')
-    parser.add_argument('--num_gratings', type=int, default=110, help='Number of grating elements')
+WL_Start = 1500e-9
+WL_Stop = 1600e-9
 
-    parser.add_argument('--initial_period', type=float, default=0.4, help='Initial period of the grating (e.g., 700 nm)')
-    parser.add_argument('--final_period', type=float, default=0.267, help='Final period of the grating (e.g., 300 nm)')
-    parser.add_argument('--initial_width', type=float, default=0.2, help='Initial width of the grating element (e.g., 350 nm)')
-    parser.add_argument('--final_width', type=float, default=0.17, help='Final width of the grating element (e.g., 150 nm)')
-    parser.add_argument('--initial_duty_cycle', type=float, default=0.5, help='Initial duty cycle (50% of the period)')
-    parser.add_argument('--final_duty_cycle', type=float, default=0.6, help='Final duty cycle (80% of the period)')
-    parser.add_argument('--tapering_length', type=float, default=35, help='Length over which tapering occurs (e.g., 10 microns)')
-    parser.add_argument('--initial_y_span', type=float, default=0.2, help='Initial height of the grating element (e.g., 450 nm)')
-    parser.add_argument('--final_y_span', type=float, default=0.45, help='Final height of the grating element (e.g., 250 nm)')
-    parser.add_argument('--NetlistNew', action='store_true', default=True, help='Set True to Activate (default: False)')
-    args = parser.parse_args()
-    main(args)
+# Define the Python file you want to run and the arguments to pass
+
+file_to_run = 'C:\\Git_Dump\\uO_Nonlinear_Photonics\\Fabrication\\PDK\\CBBs\\y_splitter_curved.py'
+arguments = [
+    '--length', str(length),  # Replace with your desired length value
+    '--w0', str(w0),   # Replace with your desired width value
+    '--w1', str(w1),    # Replace with your desired height value
+    '--w2', str(w2),    # Replace with your desired height value
+    '--w3', str(w3),    # Replace with your desired height value
+    '--w4', str(w4),   # Replace with your desired height value
+    '--w5', str(w5),    # Replace with your desired height value
+    '--s', str(s),    # Replace with your desired height value
+    '--straightlength', str(straightlength),    # Replace with your desired height value
+    '--radius', str(radius),   # Replace with your desired height value
+]
+
+# Run the Python file with arguments
+subprocess.run(['python', file_to_run] + arguments)
+#default path for current release 
+
+os.add_dll_directory( 'C:\\Program Files\\Lumerical\\v241\\api\\python')
+spec_win = importlib.util.spec_from_file_location('lumapi', 'C:\\Program Files\\Lumerical\\v241\\api\\python\\lumapi.py')
+#Functions that perform the actual loading
+lumapi = importlib.util.module_from_spec(spec_win) #windows
+spec_win.loader.exec_module(lumapi)
+
+# remoteArgs = { "hostname": "10.132.193.235",
+#                "port": 8989 }
+# fdtd = lumapi.FDTD(hide=True, remoteArgs=remoteArgs)
+
+fdtd = lumapi.FDTD()
+
+fdtd.newproject()
+
+layer = 1
+material = "Si (Silicon) - Palik"
+zmin = 0 
+zmax = 200e-9
+
+n = fdtd.gdsimport("C:\\Users\\ooner083\\Ysplitter_test.gds", "YSplitter", layer, material, zmin, zmax)
+
+############## Simulation parameters #############################
+Xsize = 12e-6 #FDTD mesh sizes
+Ysize = 10e-6
+Zsize = 4e-6
+
+#mesh size usually 10-20nm is sufficient precision. More is better but expensive
+dx = 20e-9
+dy = 20e-9
+dz = 20e-9
+
+fdtd.addfdtd()
+fdtd.set("x", 5e-6)
+fdtd.set("x span", Xsize)
+fdtd.set("y", 0.0)
+fdtd.set("y span", Ysize)
+fdtd.set("z",h/2)
+fdtd.set("z span", Zsize)
+
+fdtd.set("dimension","3D")
+fdtd.set("simulation time", 500e-15)
+
+fdtd.set("mesh type","uniform")
+fdtd.set("dx", dx)
+fdtd.set("dy", dy)
+fdtd.set("dz", dz)
+
+fdtd.set("background material","SiO2 (Glass) - Palik")
+
+fdtd.setglobalsource("wavelength start",WL_Start)
+fdtd.setglobalsource("wavelength stop",WL_Stop)
+
+
+fdtd.addport() # add port
+fdtd.set("name", "Input_port")
+fdtd.set("x", straightlength*10**-6)  # Set port position
+fdtd.set("y", 0)
+fdtd.set("y span", 5e-6)
+fdtd.set("z", h/2)
+fdtd.set("z span", 4e-6)
+fdtd.set("direction", "forward")  # Direction of the input
+fdtd.set("mode selection", "fundamental TE mode")
+
+fdtd.addport() # add port
+fdtd.set("name", "Output_port_top")
+fdtd.set("x", (length+straightlength*2+0.5)*10**-6)  # Set port position
+fdtd.set("y", ((w0+s)/2)*10**-6)
+fdtd.set("y span", w0*10**-6)
+fdtd.set("z", h/2)
+fdtd.set("z span", 4e-6)
+fdtd.set("direction", "forward")  # Direction of the input
+
+fdtd.addport() # add port
+fdtd.set("name", "Output_port_bottom")
+fdtd.set("x", (length+straightlength*2+0.5)*10**-6)  # Set port position
+fdtd.set("y", -((w0+s)/2)*10**-6)
+fdtd.set("y span", w0*10**-6)
+fdtd.set("z", h/2)
+fdtd.set("z span", 4e-6)
+fdtd.set("direction", "forward")  # Direction of the input
+
+fdtd.save("Ysplitter.fsp")
+
+fdtd.run()
+
+
+
+
+############## Add an override region mesh?########################
+# fdtd.addmesh
+# set("name","mesh_y_splitter")
+# # set dimension
+# set("x",0);
+# set("x span",2e-6);
+# set("y",0);
+# set("y span",5e-6);
+# set("z",0);
+# set("z span",10e-6);
+# # enable in X direction and disable in Y,Z directions
+# set("override x mesh",1);
+# set("override y mesh",0);
+# set("override z mesh",0);
+# # restrict mesh by defining maximum step size
+# set("set maximum mesh step",1);
+# set("dx",5e-9);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# Xsize = 240e-9
+# Ysize = 240e-9
+# Zsize = 240e-9
+
+# R = 50e-9
+
+# WL_Start = 200e-9
+# WL_Stop = 1000e-9
+
+# fdtd.addfdtd()
+# fdtd.set("x",0.0)
+# fdtd.set("x span",Xsize)
+# fdtd.set("y",0.0)
+# fdtd.set("y span",Ysize)
+# fdtd.set("z",0.0)
+# fdtd.set("z span",Zsize)
+
+# fdtd.set("dimension","3D")
+# fdtd.set("simulation time", 500e-15)
+
+# fdtd.set("mesh type","uniform")
+# fdtd.set("dx", 2.5e-9)
+# fdtd.set("dy", 2.5e-9)
+# fdtd.set("dz", 2.5e-9)
+
+# ############################## Source Implementation ###############################
+# fdtd.addtfsf()
+# fdtd.set("x",0.0)
+# fdtd.set("x span",Xsize - 40e-9)
+# fdtd.set("y",0.0)
+# fdtd.set("y span",Ysize - 40e-9)
+# fdtd.set("z",0.0)
+# fdtd.set("z span",Zsize - 40e-9)
+
+# fdtd.set("injection axis","x")
+# fdtd.set("wavelength start", WL_Start)
+# fdtd.set("wavelength stop", WL_Stop)
+
+# fdtd.addmovie()
+# fdtd.set("x",0.0)
+# fdtd.set("x span",Xsize)
+# fdtd.set("y",0.0)
+# fdtd.set("y span",Ysize)
+# fdtd.set("z",0.0)
+
+# fdtd.addsphere()
+# fdtd.set("radius", R)
+
+# fdtd.save("GoldSPhere.fsp")
+
+# fdtd.run()
