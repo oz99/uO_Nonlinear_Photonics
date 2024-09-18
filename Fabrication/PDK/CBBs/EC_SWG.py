@@ -12,7 +12,7 @@ from scipy.interpolate import CubicSpline
 import json   
 
 def main(args):
-    c = gf.Component("SWG_Edge_Coupler")
+    c = gf.Component("EC_SWG")
 
     min_feature_size = args.min_feature_size
     num_gratings = args.num_gratings
@@ -26,7 +26,7 @@ def main(args):
     tapering_length = args.tapering_length
     initial_y_span = args.initial_y_span
     final_y_span = args.final_y_span
-    device_name = 'SWG_Edge_Coupler'
+    device_name = 'EC_SWG'
 
     layer= (1,0)
     counter = 0
@@ -123,7 +123,7 @@ def main(args):
     c.add_port(portsName[0], port=a.ports["o1"])
     c.add_port(portsName[1], port=d.ports["o2"])
 
-    c.write_gds("Ysplitter_test.gds")
+    c.write_gds("EC_SWG.gds")
     c.show()
     return c
 
@@ -131,7 +131,7 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     
-    parser.add_argument('--min_feature_size', type=int, default=0.04, help='Minimum feature size, generally 40nm for our e-beam')
+    parser.add_argument('--min_feature_size', type=float, default=0.04, help='Minimum feature size, generally 40nm for our e-beam')
     parser.add_argument('--num_gratings', type=int, default=110, help='Number of grating elements')
 
     parser.add_argument('--output_WG_length', type=int, default=10, help='length of straight output WG')
