@@ -116,7 +116,7 @@ fdtd.addport() # add port
 fdtd.set("name", "Output_port_top")
 fdtd.set("x", (length+straightlength*2+0.5)*10**-6)  # Set port position
 fdtd.set("y", ((w0+s)/2)*10**-6)
-fdtd.set("y span", 5e-6)
+fdtd.set("y span", w0*10**-6)
 fdtd.set("z", h/2)
 fdtd.set("z span", 4e-6)
 fdtd.set("direction", "forward")  # Direction of the input
@@ -125,7 +125,7 @@ fdtd.addport() # add port
 fdtd.set("name", "Output_port_bottom")
 fdtd.set("x", (length+straightlength*2+0.5)*10**-6)  # Set port position
 fdtd.set("y", -((w0+s)/2)*10**-6)
-fdtd.set("y span", 5e-6)
+fdtd.set("y span", w0*10**-6)
 fdtd.set("z", h/2)
 fdtd.set("z span", 4e-6)
 fdtd.set("direction", "forward")  # Direction of the input
