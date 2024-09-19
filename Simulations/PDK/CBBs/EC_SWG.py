@@ -5,7 +5,6 @@ import importlib.machinery
 import importlib.util
 import subprocess
 
-
 ######### Setup geometry paramters
 
 h = 200e-9 # height of the structure
@@ -121,9 +120,10 @@ for i in range(int(num_gratings - (num_gratings * 0.1))):
         
         counter += 1
 ############## Simulation parameters #############################
-Xsize = (xpos + 3*output_WG_length / 2)*10**-6 #FDTD mesh sizes
-Ysize = 10e-6
-Zsize = 4e-6
+# Xsize = 100e-6#(xpos + 3*output_WG_length / 2)*10**-6 #FDTD mesh sizes
+# Ysize = 2e-6
+# Zsize = 4e-6
+
 
 #mesh size usually 10-20nm is sufficient precision. More is better but expensive
 dx = 20e-9
