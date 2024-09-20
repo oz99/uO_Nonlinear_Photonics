@@ -148,7 +148,7 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--length', type=float, default=2, help='Length of the y-spliter')
+    parser.add_argument('--length', type=float, default=3, help='Length of the y-spliter')
     parser.add_argument('--w0', type=float, default=0.6, help='Width at point 0, and for the In/Out Waveguides')
     parser.add_argument('--w1', type=float, default=1.2, help='Width at point 1')
     parser.add_argument('--w2', type=float, default=1.8, help='Width at point 2')
