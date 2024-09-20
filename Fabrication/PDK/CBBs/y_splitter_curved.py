@@ -148,20 +148,24 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+<<<<<<< HEAD
     parser.add_argument('--length', type=float, default=3, help='Length of the y-spliter')
+=======
+    parser.add_argument('--length', type=float, default=5, help='Length of the y-spliter')
+>>>>>>> 57bc17c57d461b81991b8bf5df1d56514bfd57a0
     parser.add_argument('--w0', type=float, default=0.6, help='Width at point 0, and for the In/Out Waveguides')
     parser.add_argument('--w1', type=float, default=1.2, help='Width at point 1')
-    parser.add_argument('--w2', type=float, default=1.8, help='Width at point 2')
-    parser.add_argument('--w3', type=float, default=1.7, help='Width at point 3')
-    parser.add_argument('--w4', type=float, default=1.5, help='Width at point 4')
+    parser.add_argument('--w2', type=float, default=2.4, help='Width at point 2')
+    parser.add_argument('--w3', type=float, default=4, help='Width at point 3')
+    parser.add_argument('--w4', type=float, default=3, help='Width at point 4')
     parser.add_argument('--w5', type=float, default=1.4, help='Width at point 5')
     parser.add_argument('--s', type=float, default=0.2, help='Width of the split between the output splitter arms')
     ### Important - Ensure to confirm that w5 and s are optimized to minimize material outside of the s-bend (i.e. there is only a material gap in the middle)
 
     ## Add length of the y-splitter arms
-    parser.add_argument('-straightlength', type=float, default=2, help='Length of the Straight In/Out Waveguides (default: 5 um)')
-    parser.add_argument('-radius', type=float, default=10, help='Radius of the Bend Section (default: 2 um)')
+    parser.add_argument('--straightlength', type=float, default=2, help='Length of the Straight In/Out Waveguides (default: 5 um)')
+    parser.add_argument('--radius', type=float, default=10, help='Radius of the Bend Section (default: 2 um)')
 
-    parser.add_argument('-NetlistNew', action='store_true', default=True, help='Set True to Activate (default: False)')
+    parser.add_argument('--NetlistNew', action='store_true', default=True, help='Set True to Activate (default: False)')
     args = parser.parse_args()
     main(args)
