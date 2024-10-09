@@ -30,6 +30,10 @@ def main(args):
     layer = args.layer
     overdose = args.overdose
     underdose = args.underdose
+
+    columns = args.columns
+    rows = args.rows
+    spacing = args.spacing
     
     c = gf.Component("L_shape_proximity_correction")
     center = c << gf.components.L(width=width, size=(length1-width/2, length2-width/2), layer=layer)
@@ -91,17 +95,17 @@ def main(args):
 
     e = gf.Component("L_shape_proximity_correction_array")
 
-    r1 = e.add_ref(component=d,
-        name="L_shape_proximity_correction_",
-        spacing=(2, 2),
-        columns=1,
-        rows=1)
+    r1 = e.add_ref(component=array_unit_cell,
+        name="L_shape_proximity_correction_array_unit_cell",
+        spacing=spacing,
+        columns=columns,
+        rows=rows)
 
         
   
     # Save the component to a GDSII file with high precision
     #d.write_gds("L_meta_prox.gds",with_metadata=True)
-    gdspath = array_unit_cell.write_gds(f"L_meta_prox_corr_{overdose}um.gds",with_metadata=True)
+    gdspath = e.write_gds(f"L_meta_prox_corr_{overdose}um.gds",with_metadata=True)
 
     # Display the GDSII file using gdsfactory's viewer
     gf.show(gdspath)
@@ -119,9 +123,14 @@ if __name__ == '__main__':
     parser.add_argument('--length1', type=int, default=170/1000, help='Length of the first arm of the L shape')
     parser.add_argument('--length2', type=int, default=160/1000, help='Length of the second arm of the L shape')
     parser.add_argument('--layer', type=int, default=(1,0), help='Layer number for the L shape')
-    parser.add_argument('--overdose', type=int, default=15/1000, help='Overdose on 270 deg edges')
-    parser.add_argument('--underdose', type=int, default=15/1000, help='Underdose on 90 deg edges')
-
+    parser.add_argument('--overdose', type=int, default=16/1000, help='Overdose on 270 deg edges')
+    parser.add_argument('--underdose', type=int, default=16/1000, help='Underdose on 90 deg edges')
+    
+    # The following parameters determine the size of the array. Note that changes need to be made to pass information regarding the unit cell.
+    parser.add_argument('--columns', type=int, default=400, help='Number of rows')
+    parser.add_argument('--rows', type=int, default=400, help='Number of columns')
+    parser.add_argument('--spacing', type=int, default=(2,2), help='spacing between the unit cells in um. (x, y)')
+    
     parser.add_argument('-NetlistNew', action='store_true', default=True, help='Set True to Activate (default: False)')
     args = parser.parse_args()
     main(args)
