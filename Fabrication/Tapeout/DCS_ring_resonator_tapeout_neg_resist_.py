@@ -166,8 +166,6 @@ if __name__ == '__main__':
     parser.add_argument('--ring_radius', type=int, default=10, help='radius of the smallest ring')
     parser.add_argument('--delta_ring_radius', type=int, default=0.04, help='difference in radius between the rings. It is also the summation of the delta+ring_radius. Note that the drop port position of ring0 will move according to 2x radius of ring 1')
     parser.add_argument('--ring_wg_width', type=int, default=0.42, help='spacing between waveguides')
-
-
     
     parser.add_argument('--iteration_width', type=int, default=0.025, help='spacing between waveguides')
     parser.add_argument('--MinWidth', type=int, default=0.5, help='Minimum Width of the waveguide')
@@ -175,8 +173,6 @@ if __name__ == '__main__':
     parser.add_argument('--wall-width', type=int, default=1, help='Maximum Width of the waveguide')
 
     parser.add_argument('--output_mode_size', type=int, default=2, help='Width of the output mode size')
-
-
 
     parser.add_argument('--length1', type=int, default=1000, help='Length of the waveguide')
     parser.add_argument('--length_between', type=int, default=25, help='Length between the rings')
