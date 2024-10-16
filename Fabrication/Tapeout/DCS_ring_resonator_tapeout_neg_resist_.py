@@ -29,6 +29,7 @@ def main(args):
     ring_gap = args.ring_gap
     ring_radius = args.ring_radius
     ring_wg_width = args.ring_wg_width
+    delta_ring_radius = args.delta_ring_radius
 
     output_mode_size = args.output_mode_size
 
@@ -51,8 +52,8 @@ def main(args):
         ring_gap = ring_gap + iteration_width
 
 
-        ring0 = c << gf.components.ring_double_pn(add_gap=ring_gap, drop_gap=ring_gap, radius=ring_radius, width=ring_wg_width, doping_angle=85, doped_heater=True, doped_heater_angle_buffer=10, doped_heater_layer='NPP', doped_heater_width=0.5, doped_heater_waveguide_offset=2.175)
-        ring = c << gf.components.ring_double_pn(add_gap=ring_gap, drop_gap=ring_gap, radius=ring_radius, width=ring_wg_width, doping_angle=85, doped_heater=True, doped_heater_angle_buffer=10, doped_heater_layer='NPP', doped_heater_width=0.5, doped_heater_waveguide_offset=2.175)
+        ring0 = c << gf.components.ring_double_pn(add_gap=ring_gap+(2*delta_ring_radius), drop_gap=ring_gap, radius=ring_radius, width=ring_wg_width, doping_angle=85, doped_heater=True, doped_heater_angle_buffer=10, doped_heater_layer='NPP', doped_heater_width=0.5, doped_heater_waveguide_offset=2.175)
+        ring = c << gf.components.ring_double_pn(add_gap=ring_gap, drop_gap=ring_gap, radius=ring_radius+delta_ring_radius, width=ring_wg_width, doping_angle=85, doped_heater=True, doped_heater_angle_buffer=10, doped_heater_layer='NPP', doped_heater_width=0.5, doped_heater_waveguide_offset=2.175)
         # Create straight waveguides that go 5mm to either end of the chip
         
         b = c << gf.components.straight(length=length1/2,width=ring_wg_width)
@@ -162,9 +163,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--ring_gap', type=int, default=0.2, help='spacing between waveguides')
-    parser.add_argument('--ring_radius', type=int, default=10, help='spacing between waveguides')
+    parser.add_argument('--ring_radius', type=int, default=10, help='radius of the smallest ring')
+    parser.add_argument('--delta_ring_radius', type=int, default=0.04, help='difference in radius between the rings. It is also the summation of the delta+ring_radius. Note that the drop port position of ring0 will move according to 2x radius of ring 1')
     parser.add_argument('--ring_wg_width', type=int, default=0.42, help='spacing between waveguides')
-    
+
+
     
     parser.add_argument('--iteration_width', type=int, default=0.025, help='spacing between waveguides')
     parser.add_argument('--MinWidth', type=int, default=0.5, help='Minimum Width of the waveguide')
