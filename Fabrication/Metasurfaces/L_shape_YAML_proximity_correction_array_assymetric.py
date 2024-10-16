@@ -127,8 +127,8 @@ if __name__ == '__main__':
     parser.add_argument('--underdose', type=int, default=16/1000, help='Underdose on 90 deg edges')
     
     # The following parameters determine the size of the array. Note that changes need to be made to pass information regarding the unit cell.
-    parser.add_argument('--columns', type=int, default=400, help='Number of rows')
-    parser.add_argument('--rows', type=int, default=400, help='Number of columns')
+    parser.add_argument('--columns', type=int, default=200, help='Number of rows')
+    parser.add_argument('--rows', type=int, default=200, help='Number of columns')
     parser.add_argument('--spacing', type=int, default=(2,2), help='spacing between the unit cells in um. (x, y)')
     
     parser.add_argument('-NetlistNew', action='store_true', default=True, help='Set True to Activate (default: False)')
