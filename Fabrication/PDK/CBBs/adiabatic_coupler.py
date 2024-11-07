@@ -17,13 +17,13 @@ from gdsfactory.typings import CrossSectionSpec
 def coupler_adiabatic(
     input_taper: float = 10.0,
     length1: float = 20.0,
-    length2: float = 70.0,
+    length2: float = 10.0,
     length3: float = 0.0,
     length4: float = 10.0,
     gap: float = 0.1,
     input_wg_sep: float = 3.0,
     output_wg_sep: float = 2.0,
-    dw: float = 0.05,
+    dw: float = 0.2,
     cross_section: CrossSectionSpec = "strip",
 ) -> Component:
     """Returns 50/50 adiabatic coupler.
