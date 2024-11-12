@@ -39,7 +39,7 @@ from femwell.mesh import mesh_from_OrderedDict
 # %% tags=["remove-stderr"]
 wavelength = 1.55
 num_modes = 8
-widths = np.linspace(0.1, 1, 900)
+widths = np.linspace(0.1, 1, 100)
 
 all_neffs = np.zeros((widths.shape[0], num_modes))
 all_te_fracs = np.zeros((widths.shape[0], num_modes))
@@ -51,13 +51,13 @@ for i, width in enumerate(tqdm(widths)):
         clad=clip_by_rect(core.buffer(3.0, resolution=4), -np.inf, 0, np.inf, np.inf),
     )
 
-    resolutions = {"core": {"resolution": 0.1, "distance": 1}}
+    resolutions = {"core": {"resolution": 0.01, "distance": 1}}
 
     mesh = from_meshio(mesh_from_OrderedDict(polygons, resolutions, default_resolution_max=0.6))
 
     basis0 = Basis(mesh, ElementTriP0())
     epsilon = basis0.zeros(dtype=complex)
-    for subdomain, n in {"core": 3.23, "box": 1.444, "clad": 1.444}.items():
+    for subdomain, n in {"core": 3.27, "box": 1.444, "clad": 1.444}.items():
         epsilon[basis0.get_dofs(elements=subdomain)] = n**2
 
     modes = compute_modes(basis0, epsilon, wavelength=wavelength, num_modes=num_modes)
