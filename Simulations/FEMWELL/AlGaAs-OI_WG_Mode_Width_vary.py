@@ -37,14 +37,14 @@ from femwell.maxwell.waveguide import compute_modes
 from femwell.mesh import mesh_from_OrderedDict
 
 # %% tags=["remove-stderr"]
-wavelength = 1.55
-num_modes = 8
-widths = np.linspace(0.1, 3.1, 100)
+wavelength = 1.31
+num_modes = 5
+widths = np.linspace(0.1, 2.1, 100)
 
 all_neffs = np.zeros((widths.shape[0], num_modes))
 all_te_fracs = np.zeros((widths.shape[0], num_modes))
 for i, width in enumerate(tqdm(widths)):
-    core = box(0, 0, width, 0.1)
+    core = box(0, 0, width, 0.2)
     polygons = OrderedDict(
         core=core,
         box=clip_by_rect(core.buffer(3.0, resolution=4), -np.inf, -np.inf, np.inf, 0),
@@ -57,7 +57,7 @@ for i, width in enumerate(tqdm(widths)):
 
     basis0 = Basis(mesh, ElementTriP0())
     epsilon = basis0.zeros(dtype=complex)
-    for subdomain, n in {"core": 3.275, "box": 1.444, "clad": 1.444}.items():
+    for subdomain, n in {"core": 3.3035, "box": 1.444, "clad": 1.444}.items():
         epsilon[basis0.get_dofs(elements=subdomain)] = n**2
 
     modes = compute_modes(basis0, epsilon, wavelength=wavelength, num_modes=num_modes)
