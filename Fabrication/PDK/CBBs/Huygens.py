@@ -2,36 +2,9 @@ import gdsfactory as gf
 
 
 ############################################ For a simple row of squares ###########################################################
-# def create_periodic_squares_route():
-#     # Create a new component
-#     c = gf.Component("periodic_squares_route")
-
-#     # Define the size of the squares and the spacing between them
-#     square_size = 10
-#     spacing = 5
-#     num_squares = 10
-
-#     # Create the squares and add them to the component
-#     for i in range(num_squares):
-#         square = gf.components.rectangle(size=(square_size, square_size))
-#         c.add_ref(square).move((i * (square_size + spacing), 0))
-
-#     return c
-
-# # Create the route of periodic squares
-# component = create_periodic_squares_route()
-
-# # Save the component to a GDS file
-# component.write_gds("periodic_squares_route.gds")
-
-# # Display the component in KLayout
-# gf.show(component)
-
-#################################### Routing using this #################################################################################
-
-def create_perpendicular_squares_route():
+def create_periodic_squares_route():
     # Create a new component
-    c = gf.Component("perpendicular_squares_route")
+    c = gf.Component("periodic_squares_route")
 
     # Define the size of the squares and the spacing between them
     square_size = 10
@@ -41,20 +14,22 @@ def create_perpendicular_squares_route():
     # Create the squares and add them to the component
     for i in range(num_squares):
         square = gf.components.rectangle(size=(square_size, square_size))
-        ref = c.add_ref(square)
-        ref.move((i * (square_size + spacing), 0))
-        ref.rotate(90)  # Rotate the square to make it perpendicular to the route
+        c.add_ref(square).move((i * (square_size + spacing), 0))
 
     return c
 
-# Create the route of perpendicular squares
-component = create_perpendicular_squares_route()
+# Create the route of periodic squares
+component = create_periodic_squares_route()
 
 # Save the component to a GDS file
-component.write_gds("perpendicular_squares_route.gds")
+component.write_gds("periodic_squares_route.gds")
 
 # Display the component in KLayout
 gf.show(component)
+
+#################################### Routing using this #################################################################################
+
+
 
 # def create_periodic_squares_route_with_coordinates(coordinates):
 #     # Create a new component
@@ -81,3 +56,4 @@ gf.show(component)
 
 # # Display the component in KLayout
 # gf.show(component)
+
