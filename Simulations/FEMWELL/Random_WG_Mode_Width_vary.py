@@ -69,7 +69,8 @@ all_neffs = np.real(all_neffs)
 plt.xlabel("Width of waveguide / µm")
 plt.ylabel("Effective refractive index")
 plt.fill_between(widths, 1.444, alpha=0.5, color="gray")
-plt.ylim(1.36, np.max(all_neffs) + 0.1 * (np.max(all_neffs) - 1.444))
+plt.ylim(1.36, np.max(all_neffs) + 0.1 *
+          (np.max(all_neffs) - 1.444))
 for lams, te_fracs in zip(all_neffs.T, all_te_fracs.T):
     plt.plot(widths, lams)
     plt.scatter(widths, lams, c=te_fracs, cmap="cool")
