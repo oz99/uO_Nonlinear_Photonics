@@ -1,15 +1,15 @@
 import gdsfactory as gf
 from gdsfactory.generic_tech.layer_map import LAYER
-from gdsfactory.technology import LogicalLayer
+# from gdsfactory.technology import LogicalLayer
 
 from gdsfactory.generic_tech.layer_stack import get_layer_stack
 
-layer_stack220 = get_layer_stack()
+# layer_stack220 = get_layer_stack()
 
 ## Add some waveguides to the layer stack
 
 
-c = gf.c.straight_heater_doped_rib(length=100)
+# c = gf.c.straight_heater_doped_rib(length=100)
 
 ## Add a ring resonator waveguide beneath the structure above 
 c = gf.c.ring_single()
@@ -17,15 +17,15 @@ c.show()
 
 
 
-c.show()
+# c.show()
 
-e = gf.Component("L_shape_proximity_correction_array")
+# e = gf.Component("L_shape_proximity_correction_array")
 
-r1 = e.add_ref(component=array_unit_cell,
-    name="L_shape_proximity_correction_array_unit_cell",
-    spacing=spacing,
-    columns=columns,
-    rows=rows)
+# r1 = e.add_ref(component=array_unit_cell,
+#     name="L_shape_proximity_correction_array_unit_cell",
+#     spacing=spacing,
+#     columns=columns,
+#     rows=rows)
 
 
 # nm = 1e-3

@@ -72,7 +72,7 @@ def main(args):
     sp = c << e
 
     # Write Final GDS
-    c.write_gds("EC_Nonlinear_Taper.gds")
+    # c.write_gds("EC_Nonlinear_Taper.gds")
     c.show()
     return c
 
