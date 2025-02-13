@@ -96,6 +96,7 @@ def main(args):
         c.add_port("opt3", port=ring.ports["o2"])
         c.add_port("opt4", port=ring.ports["o1"])
 
+        c.show()
         c.write_gds("RingResonatorHalf.gds", with_metadata=True)
         # elems=c.get_netlist()
         # instances=[]
