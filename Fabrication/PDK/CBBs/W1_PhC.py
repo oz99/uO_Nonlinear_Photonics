@@ -26,46 +26,72 @@ import re
 from scipy.interpolate import CubicSpline
 import json   
 
-row_length = 50
+row_length = 200
 a = 283800/1000000 # lattice constant in microns. Note that GDSfactory uses floats so division needed to avoid decimals
 
 
 hole_radius = 82302/1000000
 circle = gf.components.circle(radius=hole_radius)
 
-kagome_top = gf.Component("Kagome_top")
+W1_top = gf.Component("W1_top")
 
 
-row1 = kagome_top.add_ref(circle, columns=row_length, rows=5, column_pitch = a, row_pitch=2*a)
+row1 = W1_top.add_ref(circle, columns=row_length, rows=5, column_pitch = a, row_pitch=2*a)
 row1.move([hole_radius, 0])
-row2 = kagome_top.add_ref(circle, columns=row_length, rows=5, column_pitch = a, row_pitch=2*a)
+row2 = W1_top.add_ref(circle, columns=row_length, rows=5, column_pitch = a, row_pitch=2*a)
 row2.move([hole_radius+(a/2),a])
 
 
 
-c2 = gf.Component("Kagome_positive")
+c2 = gf.Component("W1_positive")
 
-c1 = gf.Component("Kagome_pos_all")
-kagome_t = c1.add_ref(kagome_top)
-kagome_b = c1 << kagome_top
+c1 = gf.Component("W1_pos_all")
+W1_t = c1.add_ref(W1_top)
+W1_b = c1 << W1_top
 
-kagome_b.dmirror_y()
-kagome_b.move([0, -2*a])
+W1_b.dmirror_y()
+
+# This is where we can change the offfset of the PhC Slab. Change the X coordinate to change the X offset.
+W1_b.move([0, -((2*(a+hole_radius)))]) # Ty[ically the width of the defect slab is 2 x lattice cst
 
 
 
 square_area = c2 << gf.components.rectangle(size=(a*(row_length-1), 24*a), layer=(1, 0))
-square_area.move([hole_radius,-13*a])
+square_area.move([hole_radius,-(13*a)-hole_radius])
  
-c = gf.Component("Kagome_negative")
+c = gf.Component("W1_PhC_{}_rows_a={}um".format(row_length,a))
+
+
 final_t = c << gf.boolean(square_area, c1, "A-B",layer=(1,0))
-# final_b = c << gf.boolean(square_area, kagome_b, "A-B",layer=(1,0))
 
+final_t.move(destination=[0, 0], origin=[hole_radius, -(a+hole_radius)]) 
 
+# Creates ports for the W1 PhC
+c.add_port(
+    name="opt1",
+    center=(0, 0),     # (x, y) position in microns
+    width=2*a,         # waveguide width in microns
+    orientation=180,   # facing left (west)
+    layer=(1, 0),      # GDS layer/datatype, optional if cross_section sets layer
+    port_type="optical" # can be "optical", "electrical", etc.
+)
 
+# Add another port at (x=50, y=0), facing east (orientation=0 degrees)
+c.add_port(
+    name="opt2",
+    center=(a*(row_length-1), 0),
+    width=2*a,
+    orientation=0,     # facing right (east)
+    layer=(1, 0),
+    port_type="optical"
+)
 
-# row2.show()
-c.show()
+# Becomes compatible with SiEPIC-Tools for PIC design 
+c_with_pins = gf.add_pins.add_pins_siepic_optical(c)
+
+c_with_pins.write_gds("W1_PhC_{}_rows_a={}um.gds".format(row_length,a))
+
+c_with_pins.show()
 # 
 
 
