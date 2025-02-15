@@ -26,9 +26,9 @@ import re
 from scipy.interpolate import CubicSpline
 import json   
 
-row_length = 50
+row_length = 200
 a = 283800/1000000 # lattice constant in microns. Note that GDSfactory uses floats so division needed to avoid decimals
-PhC_offset = 0 #offset as a fraction of the lattice constant. 1/4 is 90 degrees, 1/2 is 180 degrees, etc.
+PhC_offset = 1/2 #offset as a fraction of the lattice constant. 1/4 is 90 degrees, 1/2 is 180 degrees, etc.
 
 
 hole_radius = 82302/1000000
@@ -89,7 +89,7 @@ c.add_port(
 # Becomes compatible with SiEPIC-Tools for PIC design 
 c_with_pins = gf.add_pins.add_pins_siepic_optical(c)
 
-# c_with_pins.write_gds("W1_defect_PhC_{}_rows_a={}um_{}deg_offset.gds".format(row_length,a,PhC_offset*360))
+c_with_pins.write_gds("W1_defect_PhC_{}_rows_a={}um_{}deg_offset.gds".format(row_length,a,PhC_offset*360))
 
 c_with_pins.show()
 # 
