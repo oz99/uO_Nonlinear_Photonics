@@ -52,23 +52,46 @@ kagome_b = c1 << kagome_top
 kagome_b.dmirror_y()
 
 # This is where we determine the defect width (y-coordinate) and the offset between the top and bottom PhC (x-coordinate)
-kagome_b.move([0, -2*a]) # Ty[ically the width of the defect slab is 2 x lattice cst
+kagome_b.move([0, -((2*(a+hole_radius)))])# Ty[ically the width of the defect slab is 2 x lattice cst
 
 
 
 square_area = c2 << gf.components.rectangle(size=(a*(row_length-1), 24*a), layer=(1, 0))
-square_area.move([hole_radius,-13*a])
+square_area.move([hole_radius,-(13*a)-hole_radius])
  
-c = gf.Component("Kagome_negative")
-final_t = c << gf.boolean(square_area, c1, "A-B",layer=(1,0))
+c = gf.Component("Kagome_defect_PhC_{}_rows_a={}um".format(row_length,a))
+
+final_geo = c << gf.boolean(square_area, c1, "A-B",layer=(1,0))
+final_geo.move(destination=[0, 0], origin=[hole_radius, -(a+hole_radius)]) 
 # final_b = c << gf.boolean(square_area, kagome_b, "A-B",layer=(1,0))
 
 
+# Creates ports for the W1 PhC
+c.add_port(
+    name="opt1",
+    center=(0, 0),     # (x, y) position in microns
+    width=2*a,         # waveguide width in microns
+    orientation=180,   # facing left (west)
+    layer=(1, 0),      # GDS layer/datatype, optional if cross_section sets layer
+    port_type="optical" # can be "optical", "electrical", etc.
+)
 
+# Add another port at (x=50, y=0), facing east (orientation=0 degrees)
+c.add_port(
+    name="opt2",
+    center=(a*(row_length-1), 0),
+    width=2*a,
+    orientation=0,     # facing right (east)
+    layer=(1, 0),
+    port_type="optical"
+)
 
-# row2.show()
-c.show()
+# Becomes compatible with SiEPIC-Tools for PIC design 
+c_with_pins = gf.add_pins.add_pins_siepic_optical(c)
+
+c_with_pins.write_gds("W1_PhC_{}_rows_a={}um.gds".format(row_length,a))
+
+c_with_pins.show()
 # 
-
 
 

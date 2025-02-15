@@ -58,12 +58,12 @@ W1_b.move([0, -((2*(a+hole_radius)))]) # Tyically the width of the defect slab i
 square_area = c2 << gf.components.rectangle(size=(a*(row_length-1), 24*a), layer=(1, 0))
 square_area.move([hole_radius,-(13*a)-hole_radius])
  
-c = gf.Component("W1_PhC_{}_rows_a={}um".format(row_length,a))
+c = gf.Component("W1_defect_PhC_{}_rows_a={}um".format(row_length,a))
 
 
-final_t = c << gf.boolean(square_area, c1, "A-B",layer=(1,0))
+final_geo = c << gf.boolean(square_area, c1, "A-B",layer=(1,0))
 
-final_t.move(destination=[0, 0], origin=[hole_radius, -(a+hole_radius)]) 
+final_geo.move(destination=[0, 0], origin=[hole_radius, -(a+hole_radius)]) 
 
 # Creates ports for the W1 PhC
 c.add_port(
