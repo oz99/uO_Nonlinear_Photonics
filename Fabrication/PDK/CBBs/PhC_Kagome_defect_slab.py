@@ -26,9 +26,10 @@ import re
 from scipy.interpolate import CubicSpline
 import json   
 
+
 row_length = 50
 a = 283800/1000000 # lattice constant in microns. Note that GDSfactory uses floats so division needed to avoid decimals
-
+PhC_offset = 0 #offset as a fraction of the lattice constant. 1/4 is 90 degrees, 1/2 is 180 degrees, etc.
 
 hole_radius = 82302/1000000
 circle = gf.components.circle(radius=hole_radius)
@@ -52,14 +53,14 @@ kagome_b = c1 << kagome_top
 kagome_b.dmirror_y()
 
 # This is where we determine the defect width (y-coordinate) and the offset between the top and bottom PhC (x-coordinate)
-kagome_b.move([0, -((2*(a+hole_radius)))])# Ty[ically the width of the defect slab is 2 x lattice cst
+kagome_b.move([PhC_offset*a, -((2*(a+hole_radius)))])# Ty[ically the width of the defect slab is 2 x lattice cst
 
 
 
 square_area = c2 << gf.components.rectangle(size=(a*(row_length-1), 24*a), layer=(1, 0))
 square_area.move([hole_radius,-(13*a)-hole_radius])
  
-c = gf.Component("Kagome_defect_PhC_{}_rows_a={}um".format(row_length,a))
+c = gf.Component("Kagome_defect_PhC_{}_rows_a={}um_{}deg_offset.gds".format(row_length,a,PhC_offset*360))
 
 final_geo = c << gf.boolean(square_area, c1, "A-B",layer=(1,0))
 final_geo.move(destination=[0, 0], origin=[hole_radius, -(a+hole_radius)]) 
@@ -89,7 +90,7 @@ c.add_port(
 # Becomes compatible with SiEPIC-Tools for PIC design 
 c_with_pins = gf.add_pins.add_pins_siepic_optical(c)
 
-c_with_pins.write_gds("Kagome_defect_PhC_{}_rows_a={}um.gds".format(row_length,a))
+# c_with_pins.write_gds("Kagome_defect_PhC_{}_rows_a={}um_{}deg_offset.gds".format(row_length,a,PhC_offset*360))
 
 c_with_pins.show()
 # 
