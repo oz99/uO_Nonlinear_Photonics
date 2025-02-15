@@ -31,7 +31,7 @@ P.append(
         left_turn,
         straight_120,
         right_turn,
-        straight_110,
+        straight_120,
 
 
     ]

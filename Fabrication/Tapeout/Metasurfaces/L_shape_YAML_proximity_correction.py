@@ -44,7 +44,7 @@ def main(args):
 
 
     d = gf.Component("L_shape_proximity_correction1")
-    final =  d << gf.boolean(c, rect6, operation="xor")
+    final =  d << gf.boolean(c, rect6, operation="xor",layer=layer)
 
         ## Add rectangles to all corners of the L shape
     rect1 = d << gf.components.rectangle(size=(overdose, overdose), layer=layer)
