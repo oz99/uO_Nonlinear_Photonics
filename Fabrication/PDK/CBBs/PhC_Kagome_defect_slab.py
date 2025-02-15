@@ -89,7 +89,7 @@ c.add_port(
 # Becomes compatible with SiEPIC-Tools for PIC design 
 c_with_pins = gf.add_pins.add_pins_siepic_optical(c)
 
-c_with_pins.write_gds("W1_PhC_{}_rows_a={}um.gds".format(row_length,a))
+c_with_pins.write_gds("Kagome_defect_PhC_{}_rows_a={}um.gds".format(row_length,a))
 
 c_with_pins.show()
 # 
